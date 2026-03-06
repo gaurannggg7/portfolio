@@ -8,7 +8,8 @@ import {
   Database, Filter, LineChart, Server, 
   HandMetal, Microchip, Binary, Volume2,
   Map, Layers, MapPin, MonitorPlay,
-  Github, Play, Presentation
+  Github, Play, Presentation,
+  Network, ShieldAlert, Bot, FileSearch // <-- New icons added here
 } from "lucide-react";
 
 const architectures = [
@@ -31,6 +32,21 @@ const architectures = [
     ]
   },
   {
+    id: "guardian-ai",
+    title: "GuardianAI: Fraud Identification",
+    description: "Hybrid network engine detecting 'Smurfing' money laundering rings.",
+    themeColor: "from-red-500/10",
+    borderColor: "hover:border-red-500/50",
+    primaryLink: null,
+    github: null,
+    nodes: [
+      { id: 1, title: "6M+ Records", icon: Database, tags: ["Data Ingestion"] },
+      { id: 2, title: "Graph Centrality", icon: Network, tags: ["PageRank"] },
+      { id: 3, title: "Classification", icon: BrainCircuit, tags: ["XGBoost", "0.99 Recall"] },
+      { id: 4, title: "Threat Reports", icon: ShieldAlert, tags: ["98% Less Manual Work"] },
+    ]
+  },
+  {
     id: "apmac",
     title: "APMAC: SaaS ML Pipeline",
     description: "Backend ML workflows for workforce productivity prediction.",
@@ -43,6 +59,21 @@ const architectures = [
       { id: 2, title: "Feature Selection", icon: Filter, tags: ["Scikit-Learn"] },
       { id: 3, title: "AutoML / OLS", icon: LineChart, tags: ["95% CI"] },
       { id: 4, title: "Prediction Serving", icon: Server, tags: ["Backend Inference"] },
+    ]
+  },
+  {
+    id: "osint-agent",
+    title: "Agentic OSINT Analyst",
+    description: "RAG engine automating intelligence synthesis from financial filings.",
+    themeColor: "from-cyan-500/10",
+    borderColor: "hover:border-cyan-500/50",
+    primaryLink: null,
+    github: null,
+    nodes: [
+      { id: 1, title: "Doc Ingestion", icon: FileSearch, tags: ["Financial Filings"] },
+      { id: 2, title: "Retrieval", icon: Layers, tags: ["RAG", "LangChain"] },
+      { id: 3, title: "Reasoning", icon: Bot, tags: ["Chain-of-Thought"] },
+      { id: 4, title: "Synthesis", icon: FileText, tags: ["90% Faster Synthesis"] },
     ]
   },
   {
@@ -81,7 +112,8 @@ const architectures = [
   }
 ];
 
-export default function Architecture({ isDarkMode }: { isDarkMode?: boolean }) {
+// Defaulting to true so it stays Dark Mode natively
+export default function Architecture({ isDarkMode = true }: { isDarkMode?: boolean }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -131,7 +163,7 @@ export default function Architecture({ isDarkMode }: { isDarkMode?: boolean }) {
               className={`absolute w-[95%] max-w-4xl p-8 rounded-3xl transition-colors duration-300 shadow-2xl border 
                 ${isCenter ? 'cursor-default' : 'cursor-pointer pointer-events-auto'}
                 ${isDarkMode 
-                  ? `bg-[#09090b] ${isCenter ? `border-white/20 ${project.borderColor}` : 'border-white/5'}` 
+                  ? `bg-[#0a0a0a]/80 backdrop-blur-xl ${isCenter ? `border-white/20 ${project.borderColor}` : 'border-white/5'}` 
                   : `bg-white/60 backdrop-blur-md ${isCenter ? `border-black/20 ${project.borderColor}` : 'border-black/5'}`}`}
             >
               
