@@ -32,7 +32,7 @@ export const fadeInUp = {
       stiffness: 40,   // Low stiffness = slow, elegant movement
       damping: 20,     // High damping = no bouncy cartoon effect
       mass: 1.5,       // Adds "weight" to the animation
-      duration: 1.2    // Longer duration for that premium feel
+     // Longer duration for that premium feel
     } 
   },
 };
