@@ -59,16 +59,7 @@ export default function Contact({ isDarkMode }: { isDarkMode?: boolean }) {
             <Github className={`w-6 h-6 transition-colors ${isDarkMode ? 'text-zinc-300 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'}`} />
           </a>
           
-          <a 
-            href="https://www.amway.com/en_US/myshop/gaurangmohan" 
-            target="_blank" 
-            rel="noreferrer" 
-            className={`p-3 border rounded-full transition-all group 
-              ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/60 border-black/10 hover:bg-white hover:shadow-md'}`}
-            title="My Shop"
-          >
-            <ShoppingBag className={`w-6 h-6 transition-colors ${isDarkMode ? 'text-zinc-300 group-hover:text-emerald-400' : 'text-slate-700 group-hover:text-emerald-600'}`} />
-          </a>
+         
         </div>
       </motion.div>
     </section>
