@@ -39,8 +39,14 @@ Three experiences share the same content, routes, and interactive exhibits:
   Fiber, lazy-loaded) with one object per project. A flat SVG bench is the
   loading poster and the fallback for reduced motion, no WebGL, low-power
   devices, or by choice; phones get an illustrated card layout.
-- **Research Campus**: an SVG campus map (wide and tall layouts) with a
-  building and sign per project, plus a plain directory.
+- **Research Campus**: a playable top-down campus (Canvas 2D, lazy-loaded)
+  in `components/campus-game/`: `map.ts` (tiles, collision, signs, NPCs),
+  `engine.ts` (tile-step movement and interaction), `sprites.ts` (original
+  four-tone pixel art), `render.ts` (integer-scaled drawing), and React
+  panels. Arrow keys/WASD to walk, E/Enter to interact, Esc to close; a
+  D-pad on touch screens. The SVG map is the static alternative (default
+  under reduced motion) and the loading poster; a directory lists every
+  destination.
 - **Field Notes**: an open notebook with tabbed project sheets whose numbered
   marks point to documented engineering decisions.
 

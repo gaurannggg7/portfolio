@@ -7,6 +7,7 @@ import Experience from "../../Experience";
 import About from "../../About";
 import { LOCATIONS } from "./Buildings";
 import CampusMap from "./CampusMap";
+import CampusPlayable from "../../campus-game/CampusPlayable";
 
 /** Research Campus homepage: a designed campus map plus an ordinary directory. */
 export default function CampusHome() {
@@ -25,7 +26,8 @@ export default function CampusHome() {
             <p className="rounded-panel border-2 border-ink bg-surface p-4 text-[15px] leading-relaxed text-ink-2 shadow-panel">
               <span className="font-pixel text-[11px] uppercase text-accent">How to visit</span>
               <br />
-              Each building houses one project. Select a building or its sign to go inside, or use the directory below.
+              Walk around with the arrow keys, WASD, or the on-screen pad, and press E at a door. Every building is also listed in the
+              directory below, so you never have to walk.
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               <Link href="/work" className="inline-flex min-h-11 items-center gap-1.5 rounded-control border-2 border-ink bg-ink px-4 text-[15px] font-medium text-bg">
@@ -43,11 +45,19 @@ export default function CampusHome() {
         <h2 id="campus-map-h" className="sr-only">
           Campus map
         </h2>
-        <div className="mx-auto hidden max-w-[1400px] md:block">
-          <CampusMap layout="wide" />
-        </div>
-        <div className="md:hidden">
-          <CampusMap layout="tall" />
+        <div className="mx-auto max-w-[1200px] lg:border-x-2 lg:border-ink">
+          <CampusPlayable
+            staticMap={
+              <>
+                <div className="hidden md:block">
+                  <CampusMap layout="wide" />
+                </div>
+                <div className="md:hidden">
+                  <CampusMap layout="tall" />
+                </div>
+              </>
+            }
+          />
         </div>
       </section>
 
@@ -71,6 +81,25 @@ export default function CampusHome() {
               </li>
             );
           })}
+          <li className="rounded-panel border-2 border-ink bg-surface p-5 shadow-panel">
+            <p className="font-pixel text-[11px] uppercase text-accent">Career Office</p>
+            <h3 className="mt-1.5 text-xl font-semibold tracking-tight text-ink">Experience &amp; résumé</h3>
+            <div className="mt-3 flex flex-wrap gap-x-5">
+              <Link href="/work#experience" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium text-ink underline underline-offset-4">
+                Experience <ArrowRight aria-hidden className="h-4 w-4" />
+              </Link>
+              <a href={site.resume} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium text-ink underline underline-offset-4">
+                Résumé (PDF) <ArrowUpRight aria-hidden className="h-4 w-4" />
+              </a>
+            </div>
+          </li>
+          <li className="rounded-panel border-2 border-ink bg-surface p-5 shadow-panel">
+            <p className="font-pixel text-[11px] uppercase text-accent">Contact Kiosk</p>
+            <h3 className="mt-1.5 text-xl font-semibold tracking-tight text-ink">Get in touch</h3>
+            <a href={`mailto:${site.email}`} className="mt-3 inline-flex min-h-11 items-center break-all text-[15px] font-medium text-ink underline underline-offset-4">
+              {site.email}
+            </a>
+          </li>
         </ol>
       </section>
 
