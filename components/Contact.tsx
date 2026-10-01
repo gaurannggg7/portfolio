@@ -1,67 +1,57 @@
-// src/components/Contact.tsx
-import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, ShoppingBag } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { site } from "@/content/site";
+import { FooterScene } from "./PixelScene";
 
-export default function Contact({ isDarkMode }: { isDarkMode?: boolean }) {
+const links = [
+  { label: "GitHub", href: site.github, detail: "github.com/gaurannggg7" },
+  { label: "LinkedIn", href: site.linkedin, detail: "in/gaurangmmohan" },
+  { label: "Hugging Face", href: site.huggingface, detail: "huggingface.co/gaurannggg7" },
+  { label: "Resume", href: site.resume, detail: "PDF" },
+];
+
+export default function Contact() {
   return (
-    <section id="contact" className="relative z-20 flex flex-col items-center justify-center pt-32 pb-12 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="space-y-6"
-      >
-        <h2 className={`text-2xl font-bold tracking-widest uppercase mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-          Contact
-        </h2>
-
-        <div className={`space-y-3 font-mono text-sm mb-8 ${isDarkMode ? 'text-zinc-400' : 'text-slate-700 font-medium'}`}>
-          <p>
-            Email:{" "}
-            <a 
-              href="mailto:gaurangmohan25@gmail.com" 
-              className="text-blue-500 hover:text-blue-400 transition-colors font-bold"
-            >
-              gaurangmohan25@gmail.com
-            </a>
+    <footer id="contact" aria-labelledby="contact-heading" className="scroll-mt-16 border-t border-ink">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <h2 id="contact-heading" className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+            Get in touch
+          </h2>
+          <p className="mt-3 max-w-md text-[17px] leading-relaxed text-ink-2">
+            Email is the fastest way to reach me.
           </p>
+          <a
+            href={`mailto:${site.email}`}
+            className="mt-6 inline-block break-all text-2xl font-medium tracking-tight text-accent underline decoration-2 underline-offset-[6px] hover:decoration-4 sm:text-3xl"
+          >
+            {site.email}
+          </a>
         </div>
-
-        <div className="flex items-center justify-center gap-6 mt-8">
-          <a 
-            href="mailto:gaurangmohan25@gmail.com" 
-            className={`p-3 border rounded-full transition-all group 
-              ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white/60 border-black/10 hover:bg-white hover:shadow-md'}`}
-            title="Email"
-          >
-            <Mail className={`w-6 h-6 transition-colors ${isDarkMode ? 'text-zinc-300 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'}`} />
-          </a>
-          
-          <a 
-            href="https://www.linkedin.com/in/gaurangmmohan/" 
-            target="_blank" 
-            rel="noreferrer" 
-            className={`p-3 border rounded-full transition-all group 
-              ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white/60 border-black/10 hover:bg-white hover:shadow-md'}`}
-            title="LinkedIn"
-          >
-            <Linkedin className={`w-6 h-6 transition-colors ${isDarkMode ? 'text-zinc-300 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'}`} />
-          </a>
-          
-          <a 
-            href="https://github.com/gaurannggg7" 
-            target="_blank" 
-            rel="noreferrer" 
-            className={`p-3 border rounded-full transition-all group 
-              ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white/60 border-black/10 hover:bg-white hover:shadow-md'}`}
-            title="GitHub"
-          >
-            <Github className={`w-6 h-6 transition-colors ${isDarkMode ? 'text-zinc-300 group-hover:text-blue-400' : 'text-slate-700 group-hover:text-blue-600'}`} />
-          </a>
-          
-         
-        </div>
-      </motion.div>
-    </section>
+        <ul className="divide-y divide-rule border-y border-rule lg:col-span-5 lg:self-end">
+          {links.map((l) => (
+            <li key={l.label}>
+              <a
+                href={l.href}
+                target="_blank"
+                rel={l.label === "Resume" ? "noopener" : "noopener noreferrer"}
+                className="group flex min-h-14 items-center justify-between gap-4 py-2 text-ink"
+              >
+                <span className="text-[17px] font-medium">{l.label}</span>
+                <span className="flex items-center gap-2 font-mono text-xs text-ink-3 group-hover:text-ink">
+                  {l.detail}
+                  <ArrowUpRight aria-hidden className="h-4 w-4" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="h-40 w-full overflow-hidden border-t border-rule sm:h-48 lg:h-56">
+        <FooterScene />
+      </div>
+      <div className="bg-[var(--ground)] px-4 py-4 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-[#d9cbbd] sm:px-6">
+        © {new Date().getFullYear()} {site.name} · Sign clips in the SignLink demo: StudioGalt, CC0
+      </div>
+    </footer>
   );
 }
