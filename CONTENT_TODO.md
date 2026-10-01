@@ -27,6 +27,11 @@ The items below couldn't be verified, conflict between sources, or are missing.
 - **Visionary Hands "26 letters" and "text and audio".** The committed firmware has a placeholder template for V, Q/T/U share one template, it is committed in `learning_mode = true`, and there is no audio code. If a later build exists, push it or tell me what changed.
 - **Visionary Hands microcontroller.** The pin numbers (GPIO 21/22/23) and `Serial.printf` suggest an ESP32 rather than an Arduino Uno. The site says "microcontroller running the Arduino framework". Confirm the board.
 
+## Role wording on the site (kept conservative)
+
+- SignLink is labelled "Developer · speech-to-sign pipeline" until authorship is confirmed (see above).
+- GuardianAI is labelled "Developer", the minimum the previous site implied. Replace it with your real scope.
+
 ## GuardianAI details needed
 
 There's no public repository, so the site shows only the architecture and an
@@ -53,8 +58,7 @@ a repository or write-up link if one can be public.
 - **Visionary Hands photos**: the glove, the wiring, and the team demo. The schematic would then become a supplement rather than the only visual.
 - **A SignLink rendered output**: one MP4 produced by the real renderer for one of the three prepared sentences, plus the exact gloss the Gemma stage returned. The site currently plays the source clips in sequence and labels them that way.
 - **Field notes / sketchbook**: the old bio mentions sketching and painting, but there are no scans or notes in the repo, so this section was omitted rather than filled with placeholders. Scans of sketches, hardware notebook pages, or short build notes you've written would make a good small section between About and Contact.
-- **Open Graph image** for link previews (for example, a 1200×630 crop of the pixel hero).
-- **Sparky / ASU marks**: the mascot sprite and the maroon-and-gold blimp come from the previous site. ASU's trademark guidelines may restrict personal use of the mascot. Worth a check before publishing.
+- **Open Graph image** for link previews (for example, a 1200×630 crop of the hero exhibit).
 
 ## Other public repositories you could add to "More work"
 

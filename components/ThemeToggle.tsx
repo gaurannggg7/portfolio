@@ -22,9 +22,9 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label="Switch between day and night theme"
-      title="Switch between day and night theme"
-      className="inline-flex h-11 w-11 items-center justify-center border border-rule text-ink-2 transition-colors hover:border-rule-strong hover:text-ink"
+      aria-label="Switch between light and dark theme"
+      title="Switch between light and dark theme"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-rule text-ink-2 transition-colors hover:border-rule-strong hover:text-ink"
     >
       <Sun aria-hidden className="theme-icon-light h-[18px] w-[18px]" />
       <Moon aria-hidden className="theme-icon-dark h-[18px] w-[18px]" />

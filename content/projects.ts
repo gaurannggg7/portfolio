@@ -8,7 +8,9 @@ export const signlink: Project = {
   name: "SignLink",
   summary: "Spoken or typed English in, a sequence of American Sign Language clips out.",
   period: "2025 – 2026",
-  role: "Designed and built the pipeline",
+  role: "Developer · speech-to-sign pipeline",
+  outcome:
+    "Turns spoken or typed English into a sequence of ASL sign clips, with a fallback chain so no word is silently dropped.",
   problem:
     "Hard-of-hearing people who sign are often handed spoken English with no interpreter — at a clinic desk, an airport counter, or on a family call. SignLink takes what someone says or types and plays it back as ASL signs.",
   contribution: [
@@ -22,6 +24,8 @@ export const signlink: Project = {
     {
       id: "input",
       label: "Speech or text",
+      short: "Input",
+      brief: "Audio upload or typed English.",
       input: "A WAV/MP3 upload or typed English in the Streamlit app. The command-line version can also record from a microphone.",
       process: "Audio goes to the speech-recognition stage. Typed text skips it.",
       output: "Raw audio, or an English sentence.",
@@ -31,6 +35,8 @@ export const signlink: Project = {
     {
       id: "asr",
       label: "Whisper ASR",
+      short: "ASR",
+      brief: "Whisper turns speech into an English transcript.",
       input: "Audio file.",
       process:
         "Loads an OpenAI Whisper model once and caches it, choosing CUDA, Apple MPS, or CPU in that order and falling back to CPU if loading fails. Transcribes with fp16 disabled.",
@@ -43,6 +49,8 @@ export const signlink: Project = {
     {
       id: "gloss",
       label: "Gloss generation",
+      short: "Gloss",
+      brief: "A constrained Gemma prompt rewrites English as ASL gloss, with a rule-based fallback.",
       input: "English transcript.",
       process:
         "Sends a constrained prompt to google/gemma-2b-it through the Hugging Face Inference API: drop articles, linking verbs, and prepositions, use root verb forms, and choose only words from the sign vocabulary. Low temperature, no sampling. If the call fails or returns nothing, a stopword filter produces the gloss instead.",
@@ -57,6 +65,8 @@ export const signlink: Project = {
     {
       id: "resolve",
       label: "Sign resolver",
+      short: "Resolve",
+      brief: "Each token becomes a clip: phrase, exact, suffix-stripped, or fingerspelled.",
       input: "Gloss tokens.",
       process:
         "Greedy longest-phrase match first, then exact single-token match, then regex suffix stripping (-ING, -ED, -LY, -S…), and finally fingerspelling with A–Z letter clips. A filesystem index maps each entry to its clip.",
@@ -71,6 +81,8 @@ export const signlink: Project = {
     {
       id: "render",
       label: "FFmpeg renderer",
+      short: "Render",
+      brief: "FFmpeg normalizes the clips and joins them into one video.",
       input: "Ordered clip files.",
       process:
         "Pass one re-encodes each clip to 1280×720 H.264 with padding and no audio. Pass two joins them with the concat demuxer, copying streams without re-encoding. Temp files are namespaced by process ID.",
@@ -85,6 +97,8 @@ export const signlink: Project = {
     {
       id: "serve",
       label: "Hosting",
+      short: "Host",
+      brief: "Streamlit app on Hugging Face Spaces.",
       input: "App code, plus the clip dataset on Hugging Face.",
       process:
         "A Streamlit app on Hugging Face Spaces downloads the clip dataset at startup. Gloss generation is offloaded to a hosted model, and the app container stays small.",
@@ -127,6 +141,14 @@ export const signlink: Project = {
     { label: "Recorded demo", href: "https://youtu.be/33DwsluZMfA", kind: "video", note: "earlier offline build, YouTube" },
     { label: "Sign dataset", href: "https://huggingface.co/datasets/gaurannggg7/asl-dictionary", kind: "dataset" },
   ],
+  provenance: {
+    summary: "How the prepared examples were made",
+    points: [
+      "Each sentence was run through the repository's _simple_gloss fallback and ASLDictionary resolver against the published clip index.",
+      "The hosted app normally uses a Gemma model for the gloss step, so its gloss can differ from the one shown.",
+      "Clips are the original files from the StudioGalt Sign-Language Mocap Archive (CC0), streamed from SignLink's Hugging Face dataset. They are not SignLink's rendered output.",
+    ],
+  },
   stack: ["Python", "Whisper", "Gemma", "Hugging Face", "FFmpeg", "Streamlit", "PyTorch"],
 };
 
@@ -134,6 +156,9 @@ export const guardian: Project = {
   slug: "guardian",
   name: "GuardianAI",
   summary: "Finding structured money-laundering patterns in transaction networks.",
+  role: "Developer",
+  outcome:
+    "Combines graph centrality with a gradient-boosted classifier to surface laundering patterns that one-transaction-at-a-time checks miss.",
   problem:
     "In \"smurfing\", a large sum is split into many small transfers across several accounts, so no single transfer looks unusual. Checking transactions one at a time misses it. The pattern only shows up in how the accounts connect.",
   howItWorks:
@@ -175,6 +200,14 @@ export const guardian: Project = {
   ],
   links: [],
   availability: "The code and data aren't public yet, so the example below uses synthetic data.",
+  provenance: {
+    summary: "About the synthetic example",
+    points: [
+      "Accounts, amounts, and times are hand-made to show a fan-out and fan-in structuring pattern.",
+      "PageRank is weighted by amount, with damping 0.85, and computed in your browser on these 12 accounts.",
+      "It shows why centrality is a useful feature. It does not reproduce GuardianAI's classifier or its results.",
+    ],
+  },
   stack: ["Python", "XGBoost", "PageRank", "Graph features"],
 };
 
@@ -184,6 +217,8 @@ export const visionary: Project = {
   summary: "A glove that reads fingerspelled ASL letters and turns them into text.",
   period: "Jan 2024 – Dec 2025",
   role: "Team lead · EPICS at ASU · team of 7",
+  outcome:
+    "A sensor glove that matches finger bend and hand motion to fingerspelled letters and assembles them into words.",
   problem:
     "Most people who don't sign can't read fingerspelling. Visionary Hands measures how each finger bends, plus hand motion, matches that to a letter, and builds words out of the letters.",
   contribution: [
@@ -260,6 +295,14 @@ export const visionary: Project = {
     },
   ],
   links: [{ label: "Repository", href: VH_REPO, kind: "repo" }],
+  provenance: {
+    summary: "Where the matcher comes from",
+    points: [
+      "The 26 letter templates and the nearest-template rule are copied from combined_code/infoProcessing.cpp.",
+      "A Java prototype of the same approach (Strain.java) is also in the repository.",
+      "Values are ones you set with the sliders, not sensor data, and the five-reading stability check is skipped.",
+    ],
+  },
   stack: ["C++", "Arduino framework", "Java", "MPU6050", "Flex sensors", "Python (data extraction)"],
 };
 

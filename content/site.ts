@@ -2,12 +2,12 @@ import type { Role } from "./types";
 
 export const site = {
   name: "Gaurang Mohan",
-  title: "Gaurang Mohan — AI systems engineer",
+  title: "Gaurang Mohan — AI / ML Engineer",
+  role: "AI / ML Engineer",
   description:
     "Portfolio of Gaurang Mohan: AI and ML systems for speech, sign language, sensors, and transaction networks, with interactive walkthroughs of how each one works.",
-  focus: "I build AI systems that turn speech, sensor, and transaction data into tools people can use.",
-  supporting:
-    "My work runs from models to the pipelines and interfaces around them — a voice-to-ASL translator, a sign-language glove, and ML workflows for workforce prediction.",
+  intro:
+    "I build machine-learning systems end to end, from models to the pipelines and interfaces around them, with a focus on speech, sign language, sensors, and transaction data.",
   resume: "/GAURANG-MOHAN_RESUME.pdf",
   email: "gaurangmohan25@gmail.com",
   github: "https://github.com/gaurannggg7",
@@ -15,10 +15,11 @@ export const site = {
   huggingface: "https://huggingface.co/gaurannggg7",
 };
 
+// Absolute so the links also work from project pages; contact lives in every page's footer.
 export const nav = [
-  { label: "Work", href: "#work" },
-  { label: "Experience", href: "#experience" },
-  { label: "About", href: "#about" },
+  { label: "Work", href: "/#work" },
+  { label: "Experience", href: "/#experience" },
+  { label: "About", href: "/#about" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -59,7 +60,7 @@ export const roles: Role[] = [
       "Integrated flex sensors, an accelerometer, and a microcontroller; wrote the letter-matching logic in Java and C++.",
       "Pitched the project at the EPICS Elite Pitch competition, which awarded the team $1,000.",
     ],
-    project: { label: "How the glove works", href: "#visionary" },
+    project: { label: "How the glove works", href: "/work/visionary" },
   },
   {
     org: "Arizona State University",

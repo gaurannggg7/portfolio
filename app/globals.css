@@ -5,120 +5,52 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
-  /* Surfaces & ink — warm paper */
-  --bg: #f4f0e7;
-  --surface: #fbf9f4;
-  --surface-2: #ece6d9;
-  --ink: #1c1a17;
-  --ink-2: #48433b;
-  --ink-3: #686157;
-  --rule: #d8cfbf;
-  --rule-strong: #a99d87;
-
-  /* Primary accent: the desert mountain from the pixel scenery */
-  --accent: #a3421f;
-  --accent-soft: #f1ddd2;
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --surface-2: #f2f3f5;
+  --ink: #111214;
+  --ink-2: #3d4148;
+  --ink-3: #5f646c;
+  --rule: #e4e6e9;
+  --rule-strong: #c6cad0;
+  --accent: #1f4fd8;
+  --accent-soft: #e9eefc;
   --on-accent: #ffffff;
-
-  /* Project accents (sky, blimp maroon, gold) */
-  --signlink: #1d58c7;
-  --signlink-soft: #dde7fa;
-  --guardian: #8c1d40;
-  --guardian-soft: #f3dde4;
-  --visionary: #7f5c00;
-  --visionary-soft: #f6ebc9;
-
-  /* Pixel scene palette — day */
-  --sky-top: #3f7fe0;
-  --sky-bottom: #a7d8f5;
-  --sun: #ffc627;
-  --cloud: #ffffff;
-  --mountain: #a64b31;
-  --mountain-edge: #c15b3d;
-  --rock-1: #8c3b22;
-  --rock-2: #c46740;
-  --city-1: #c9c3b6;
-  --city-2: #b6afa1;
-  --city-3: #d9d3c6;
-  --window: #7cc4ef;
-  --gold: #ffc627;
-  --ground: #6e3420;
-
-  --focus: #1d58c7;
+  --focus: #1f4fd8;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #161617;
-    --surface: #1d1d1f;
-    --surface-2: #26262a;
-    --ink: #eee9e0;
-    --ink-2: #c3bcb0;
-    --ink-3: #a19a8f;
-    --rule: #323130;
-    --rule-strong: #57534c;
-    --accent: #ec8b62;
-    --accent-soft: #3a261d;
-    --on-accent: #1a120e;
-    --signlink: #8db1ff;
-    --signlink-soft: #1d2840;
-    --guardian: #f2829f;
-    --guardian-soft: #3a1c26;
-    --visionary: #f1c24f;
-    --visionary-soft: #352c14;
-    --sky-top: #080a14;
-    --sky-bottom: #1b2140;
-    --sun: #e6e2d6;
-    --cloud: #3a3f5c;
-    --mountain: #2b1d17;
-    --mountain-edge: #45302a;
-    --rock-1: #1c130f;
-    --rock-2: #3b2a22;
-    --city-1: #111114;
-    --city-2: #0c0c0f;
-    --city-3: #17171b;
-    --window: #f1c24f;
-    --gold: #f1b72f;
-    --ground: #120c09;
-    --focus: #8db1ff;
+    --bg: #131416;
+    --surface: #1a1b1e;
+    --surface-2: #212327;
+    --ink: #ececee;
+    --ink-2: #babec5;
+    --ink-3: #959aa2;
+    --rule: #2b2d31;
+    --rule-strong: #43464c;
+    --accent: #7d9dff;
+    --accent-soft: #1c2440;
+    --on-accent: #0d1020;
+    --focus: #7d9dff;
     color-scheme: dark;
   }
 }
 
 [data-theme="dark"] {
-  --bg: #161617;
-  --surface: #1d1d1f;
-  --surface-2: #26262a;
-  --ink: #eee9e0;
-  --ink-2: #c3bcb0;
-  --ink-3: #a19a8f;
-  --rule: #323130;
-  --rule-strong: #57534c;
-  --accent: #ec8b62;
-  --accent-soft: #3a261d;
-  --on-accent: #1a120e;
-  --signlink: #8db1ff;
-  --signlink-soft: #1d2840;
-  --guardian: #f2829f;
-  --guardian-soft: #3a1c26;
-  --visionary: #f1c24f;
-  --visionary-soft: #352c14;
-  --sky-top: #080a14;
-  --sky-bottom: #1b2140;
-  --sun: #e6e2d6;
-  --cloud: #3a3f5c;
-  --mountain: #2b1d17;
-  --mountain-edge: #45302a;
-  --rock-1: #1c130f;
-  --rock-2: #3b2a22;
-  --city-1: #111114;
-  --city-2: #0c0c0f;
-  --city-3: #17171b;
-  --window: #f1c24f;
-  --gold: #f1b72f;
-  --ground: #120c09;
-  --focus: #8db1ff;
+  --bg: #131416;
+  --surface: #1a1b1e;
+  --surface-2: #212327;
+  --ink: #ececee;
+  --ink-2: #babec5;
+  --ink-3: #959aa2;
+  --rule: #2b2d31;
+  --rule-strong: #43464c;
+  --accent: #7d9dff;
+  --accent-soft: #1c2440;
+  --on-accent: #0d1020;
+  --focus: #7d9dff;
   color-scheme: dark;
 }
 
@@ -134,12 +66,6 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
-  --color-signlink: var(--signlink);
-  --color-signlink-soft: var(--signlink-soft);
-  --color-guardian: var(--guardian);
-  --color-guardian-soft: var(--guardian-soft);
-  --color-visionary: var(--visionary);
-  --color-visionary-soft: var(--visionary-soft);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
@@ -165,7 +91,6 @@ body {
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -181,30 +106,31 @@ body {
   }
 }
 
-/* Pixel scenery: show day or night layers based on the active theme. */
-.scene .night {
-  display: none;
-}
-[data-theme="dark"] .scene .day {
-  display: none;
-}
-[data-theme="dark"] .scene .night {
-  display: inline;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .scene .day {
-    display: none;
-  }
-  :root:not([data-theme]) .scene .night {
-    display: inline;
-  }
+/* Small technical annotation used across exhibits. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 
-.pixelated {
-  image-rendering: pixelated;
+/* Disclosure marker for <details> sections. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary .chev {
+  transition: transform 160ms ease;
+}
+details[open] > summary .chev {
+  transform: rotate(90deg);
 }
 
-/* Theme toggle icons: pick by theme in CSS so server and client markup match. */
+/* Theme toggle icons: pick by theme in CSS so server and client render identical markup. */
 .theme-icon-dark {
   display: none;
 }

@@ -14,6 +14,10 @@ export type ProjectLink = {
 export type Stage = {
   id: string;
   label: string;
+  /** Short name for compact views, e.g. "Gloss". */
+  short?: string;
+  /** One-line description for compact views. */
+  brief?: string;
   input: string;
   process: string;
   output: string;
@@ -36,6 +40,8 @@ export type Project = {
   slug: ProjectSlug;
   name: string;
   summary: string;
+  /** One concise outcome or purpose statement for the homepage. */
+  outcome: string;
   period?: string;
   role?: string;
   problem: string;
@@ -46,6 +52,8 @@ export type Project = {
   limitations?: string[];
   results?: Result[];
   links: ProjectLink[];
+  /** Where the demonstration's data comes from; shown in an expandable note beside it. */
+  provenance?: { summary: string; points: string[] };
   /** Shown when a project has no public code or demo. */
   availability?: string;
   stack: string[];

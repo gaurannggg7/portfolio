@@ -10,7 +10,16 @@ type Status = "idle" | "playing" | "ended" | "error";
  * Plays the resolver's source clips one after another. Nothing is fetched
  * until the visitor presses play.
  */
-export default function ClipPlayer({ clips, sentence }: { clips: Clip[]; sentence: string }) {
+export default function ClipPlayer({
+  clips,
+  sentence,
+  compact = false,
+}: {
+  clips: Clip[];
+  sentence: string;
+  /** Smaller idle state for the homepage exhibit. */
+  compact?: boolean;
+}) {
   const [status, setStatus] = useState<Status>("idle");
   const [index, setIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -33,23 +42,25 @@ export default function ClipPlayer({ clips, sentence }: { clips: Clip[]; sentenc
 
   return (
     <div>
-      <p className="mb-2 h-5 font-mono text-xs text-ink-3" aria-live="polite">
+      <p className="mb-2 h-4 font-mono text-[11px] text-ink-3" aria-live="polite">
         {status !== "idle" && `Clip ${String(index + 1).padStart(2, "0")} of ${String(clips.length).padStart(2, "0")} · ${clip.label}`}
       </p>
-      <div className="relative aspect-video w-full overflow-hidden border border-rule bg-surface-2">
+      <div className="relative aspect-video w-full overflow-hidden rounded-md border border-rule bg-surface-2">
         {status === "idle" ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center">
             <button
               type="button"
               onClick={() => playFrom(0)}
-              className="inline-flex min-h-11 items-center gap-2 bg-ink px-4 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
             >
               <Play aria-hidden className="h-4 w-4" />
               Play {clips.length} source clip{clips.length > 1 ? "s" : ""}
             </button>
-            <p className="max-w-xs text-xs leading-relaxed text-ink-3">
-              Streams small MP4 files from SignLink&apos;s Hugging Face dataset.
-            </p>
+            {!compact && (
+              <p className="max-w-xs text-xs leading-relaxed text-ink-3">
+                Streams small MP4 files from SignLink&apos;s Hugging Face dataset.
+              </p>
+            )}
           </div>
         ) : status === "error" ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
@@ -86,7 +97,7 @@ export default function ClipPlayer({ clips, sentence }: { clips: Clip[]; sentenc
         )}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label={`Clips for “${sentence}”`}>
+      <div className={`flex flex-wrap items-center gap-1.5 ${compact ? "mt-2" : "mt-3"}`} role="group" aria-label={`Clips for “${sentence}”`}>
         {clips.map((c, i) => {
           const isCurrent = status !== "idle" && i === index;
           return (
@@ -96,7 +107,7 @@ export default function ClipPlayer({ clips, sentence }: { clips: Clip[]; sentenc
               onClick={() => playFrom(i)}
               aria-current={isCurrent ? "true" : undefined}
               aria-label={`Play clip ${i + 1}: ${c.label}`}
-              className={`min-h-11 min-w-11 border px-2.5 font-mono text-xs transition-colors ${
+              className={`min-h-10 min-w-10 rounded-md border px-2.5 font-mono text-xs transition-colors ${
                 isCurrent ? "border-ink bg-ink text-bg" : "border-rule text-ink-2 hover:border-rule-strong hover:text-ink"
               }`}
             >

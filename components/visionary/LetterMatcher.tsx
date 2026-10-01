@@ -27,7 +27,7 @@ export default function LetterMatcher() {
   };
 
   return (
-    <div className="grid gap-8 border border-rule bg-surface p-5 sm:p-6 lg:grid-cols-12">
+    <div className="grid gap-8 rounded-xl border border-rule bg-surface p-5 sm:p-6 lg:grid-cols-12">
       <div className="lg:col-span-7">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <label className="text-sm text-ink-2" htmlFor={`${uid}-preset`}>
@@ -36,7 +36,7 @@ export default function LetterMatcher() {
               id={`${uid}-preset`}
               value={preset}
               onChange={(e) => loadPreset(e.target.value)}
-              className="mt-1 block min-h-11 w-28 border border-rule-strong bg-bg px-2 font-mono text-ink"
+              className="mt-1 block min-h-11 w-28 rounded-md border border-rule-strong bg-bg px-2 font-mono text-ink"
             >
               {LETTERS.map((l) => (
                 <option key={l.char} value={l.char}>
@@ -67,7 +67,7 @@ export default function LetterMatcher() {
                   setPreset("");
                 }}
                 className="h-11 w-full cursor-pointer"
-                style={{ accentColor: "var(--visionary)" }}
+                style={{ accentColor: "var(--accent)" }}
               />
               <output htmlFor={`${uid}-f${i}`} className="text-right font-mono text-sm text-ink">
                 {values[i]}
@@ -80,11 +80,11 @@ export default function LetterMatcher() {
           <legend className="text-sm text-ink-2">Motion from the MPU6050</legend>
           <div className="mt-2 flex flex-wrap gap-x-6">
             <label className="flex min-h-11 items-center gap-2 text-sm text-ink">
-              <input type="checkbox" checked={jMotion} onChange={(e) => setJMotion(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--visionary)" }} />
+              <input type="checkbox" checked={jMotion} onChange={(e) => setJMotion(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--accent)" }} />
               J-motion (turns I into J)
             </label>
             <label className="flex min-h-11 items-center gap-2 text-sm text-ink">
-              <input type="checkbox" checked={zMotion} onChange={(e) => setZMotion(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--visionary)" }} />
+              <input type="checkbox" checked={zMotion} onChange={(e) => setZMotion(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--accent)" }} />
               Z-motion (turns D into Z)
             </label>
           </div>
@@ -92,19 +92,19 @@ export default function LetterMatcher() {
       </div>
 
       <div className="flex flex-col lg:col-span-5 lg:border-l lg:border-rule lg:pl-8" aria-live="polite">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3">Firmware would register</p>
+        <p className="label">Firmware would register</p>
         <p className="mt-2 font-mono text-7xl leading-none text-ink">
           {result.char === "space" ? "␣" : result.char}
           <span className="sr-only">{result.char === "space" ? " (space, ends the word)" : ""}</span>
         </p>
         <p className="mt-3 font-mono text-sm text-ink-2">distance {result.distance.toFixed(1)}</p>
-        {result.motionOverride && <p className="mt-1 font-mono text-sm text-visionary">{result.motionOverride}</p>}
+        {result.motionOverride && <p className="mt-1 font-mono text-sm text-accent">{result.motionOverride}</p>}
         {tie && (
-          <p className="mt-3 border-l-2 border-visionary pl-3 text-sm leading-relaxed text-ink-2">
+          <p className="mt-3 border-l-2 border-accent pl-3 text-sm leading-relaxed text-ink-2">
             Tie: {tied.join(", ")} have identical templates. The firmware keeps the first one it checks, so this hand shape always reads as {tied[0]}.
           </p>
         )}
-        <p className="mt-5 text-xs uppercase tracking-[0.1em] text-ink-3">Next closest</p>
+        <p className="label mt-5">Next closest</p>
         <ul className="mt-1 space-y-1 font-mono text-sm text-ink-2">
           {runnersUp.map((r) => (
             <li key={r.char}>

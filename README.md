@@ -23,9 +23,11 @@ npm run build && npm run start
 - `content/` holds all copy and data: project facts, pipeline stages, the
   SignLink example traces, the synthetic GuardianAI graph, and the glove letter
   templates (copied from the firmware). Edit text here, not in components.
+- `app/page.tsx` is the concise homepage; `app/work/[slug]/page.tsx` renders
+  the three project pages (`/work/signlink`, `/work/guardian`, `/work/visionary`).
 - `components/` holds rendering. Interactive pieces are client components
-  (`PipelineExplorer`, `signlink/`, `guardian/`, `visionary/`, `PixelScene`);
-  section shells are server components.
+  (`PipelineExplorer`, `signlink/`, `guardian/`, `visionary/`); section shells
+  are server components.
 - `CONTENT_TODO.md` lists facts that need verification, conflicting sources,
   and assets to add.
 
