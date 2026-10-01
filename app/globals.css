@@ -78,6 +78,8 @@
   --roof-3: #5b6b4a;
   --roof-4: #6a5a8c;
   --window: #8ec9ec;
+  --cloud: #ffffff;
+  --sun: #ffd45a;
   --trunk: #7a5a3c;
   --leaf: #4f8f45;
   color-scheme: light;
@@ -109,6 +111,8 @@
   --roof-3: #344029;
   --roof-4: #3e3557;
   --window: #f0c860;
+  --cloud: #6f7a8f;
+  --sun: #ece6d2;
   --trunk: #4a3826;
   --leaf: #2d5a33;
   color-scheme: dark;
@@ -179,7 +183,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 6.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -268,4 +272,174 @@ details[open] > summary .chev {
 }
 [data-view="notes"] .sec-index::before {
   content: "§ ";
+}
+
+/* Workbench illustration motion: plays once per selection. Reduced motion
+   collapses these to their final frame via the global rule above. */
+.wb-signal {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: wb-draw 2.2s ease-in-out forwards;
+}
+@keyframes wb-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.wb-flow {
+  animation: wb-dash 1.2s linear 2 both;
+}
+@keyframes wb-dash {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.wb-string {
+  animation: wb-flash 0.6s ease-out both;
+}
+@keyframes wb-flash {
+  from {
+    stroke: #7d7466;
+    stroke-width: 1.2;
+  }
+  to {
+    stroke: #e0453a;
+    stroke-width: 2.4;
+  }
+}
+
+/* Research Campus contextual motion (disabled by reduced motion). */
+.cp-dot {
+  animation: cp-blink 1.8s steps(1) infinite;
+}
+@keyframes cp-blink {
+  0%, 60% { opacity: 1; }
+  30% { opacity: 0.15; }
+}
+.cp-telescope {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: cp-sweep 7s ease-in-out infinite alternate;
+}
+@keyframes cp-sweep {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(8deg); }
+}
+.cp-smoke {
+  animation: cp-rise 3.6s linear infinite;
+}
+@keyframes cp-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
+.cp-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: cp-grow 3s ease-out infinite;
+}
+@keyframes cp-grow {
+  0% { transform: scaleY(0.2); }
+  40%, 100% { transform: scaleY(1); }
+}
+.cp-cloud {
+  animation: cp-drift 90s linear infinite;
+}
+@keyframes cp-drift {
+  from { transform: translateX(-160px); }
+  to { transform: translateX(1300px); }
+}
+.cp-building {
+  transition: transform 200ms ease;
+}
+a:hover > .cp-building,
+a:focus-visible > .cp-building {
+  transform: translateY(-5px);
+}
+a:focus-visible > .cp-ring {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-dot, .cp-telescope, .cp-smoke, .cp-bar, .cp-cloud { animation: none !important; }
+  .cp-smoke { opacity: 0; }
+}
+
+/* Field Notes desk and notebook. */
+[data-view="notes"] {
+  --desk: #ddd2bd;
+}
+[data-theme="dark"] [data-view="notes"],
+[data-theme="dark"][data-view="notes"] {
+  --desk: #121110;
+}
+.nb-surface {
+  background: var(--desk);
+}
+.nb-book {
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  /* stacked page edges under the open book */
+  box-shadow:
+    0 1px 0 var(--rule),
+    0 3px 0 -1px var(--surface-2),
+    0 4px 0 -1px var(--rule-strong),
+    0 6px 0 -2px var(--surface-2),
+    0 7px 0 -2px var(--rule-strong),
+    0 30px 60px -30px rgba(40, 25, 10, 0.55);
+}
+@media (min-width: 1024px) {
+  .nb-book > .nb-page:first-child {
+    background: linear-gradient(90deg, transparent 88%, rgba(60, 40, 20, 0.08));
+  }
+  .nb-book > .nb-page:last-child {
+    background: linear-gradient(270deg, transparent 88%, rgba(60, 40, 20, 0.1));
+    border-left: 1px solid var(--rule);
+  }
+}
+.nb-page + .nb-page {
+  border-top: 1px solid var(--rule);
+}
+@media (min-width: 1024px) {
+  .nb-page + .nb-page {
+    border-top: 0;
+  }
+}
+.nb-tab {
+  background: var(--surface-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px 4px 0 0;
+}
+.nb-tab-on {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+@media (min-width: 1024px) {
+  .nb-tab {
+    border-radius: 0 6px 6px 0;
+    border-left: 0;
+  }
+}
+.nb-turn {
+  animation: nb-turn 280ms ease-out;
+}
+@keyframes nb-turn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) rotate(-0.3deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 5rem;
+  }
 }

@@ -29,9 +29,9 @@ function AccessibilityLab() {
       <rect x={68} y={118} width={24} height={32} style={v("roof-1")} {...OUTLINE} />
       {/* Speech-bubble sign: SignLink starts from spoken English */}
       <path d="M58 12h44v24h-26l-8 8v-8h-10z" style={v("surface")} {...OUTLINE} />
-      <rect x={66} y={22} width={4} height={4} style={v("ink")} />
-      <rect x={78} y={22} width={4} height={4} style={v("ink")} />
-      <rect x={90} y={22} width={4} height={4} style={v("ink")} />
+      <rect className="cp-dot" x={66} y={22} width={4} height={4} style={v("ink")} />
+      <rect className="cp-dot" x={78} y={22} width={4} height={4} style={{ ...v("ink"), animationDelay: "0.3s" }} />
+      <rect className="cp-dot" x={90} y={22} width={4} height={4} style={{ ...v("ink"), animationDelay: "0.6s" }} />
       <rect x={78} y={36} width={4} height={12} style={v("ink-2")} />
     </g>
   );
@@ -49,9 +49,9 @@ function LedgerOffice() {
       <rect x={68} y={104} width={24} height={34} style={v("roof-3")} {...OUTLINE} />
       {/* Bar-chart placard */}
       <rect x={60} y={72} width={40} height={24} style={v("surface")} {...OUTLINE} strokeWidth={1.5} />
-      <rect x={66} y={86} width={6} height={6} style={v("ink")} />
-      <rect x={77} y={80} width={6} height={12} style={v("ink")} />
-      <rect x={88} y={76} width={6} height={16} style={v("ink")} />
+      <rect className="cp-bar" x={66} y={86} width={6} height={6} style={v("ink")} />
+      <rect className="cp-bar" x={77} y={80} width={6} height={12} style={{ ...v("ink"), animationDelay: "0.25s" }} />
+      <rect className="cp-bar" x={88} y={76} width={6} height={16} style={{ ...v("ink"), animationDelay: "0.5s" }} />
     </g>
   );
 }
@@ -63,7 +63,7 @@ function FraudObservatory() {
       <path d="M34 86v-8h4v-8h6v-8h8v-6h10v-4h36v4h10v6h8v8h6v8h4v8z" style={v("roof-4")} {...OUTLINE} />
       <rect x={76} y={52} width={10} height={34} style={v("window")} />
       {/* Telescope */}
-      <path d="M84 60l40-30l6 8l-40 30z" style={v("wall-2")} {...OUTLINE} strokeWidth={1.5} />
+      <path className="cp-telescope" d="M84 60l40-30l6 8l-40 30z" style={v("wall-2")} {...OUTLINE} strokeWidth={1.5} />
       <rect x={46} y={102} width={14} height={14} style={v("window")} {...OUTLINE} strokeWidth={1.5} />
       <rect x={100} y={102} width={14} height={14} style={v("window")} {...OUTLINE} strokeWidth={1.5} />
       <rect x={68} y={118} width={24} height={32} style={v("roof-4")} {...OUTLINE} />
@@ -81,6 +81,12 @@ function HardwareWorkshop() {
   return (
     <g>
       <rect x={12} y={64} width={136} height={86} style={v("wall-1")} {...OUTLINE} />
+      <rect x={118} y={22} width={12} height={30} style={v("wall-2")} {...OUTLINE} />
+      <g style={v("cloud")}>
+        <rect className="cp-smoke" x={118} y={8} width={10} height={8} />
+        <rect className="cp-smoke" x={122} y={4} width={8} height={6} style={{ animationDelay: "1.2s" }} />
+        <rect className="cp-smoke" x={116} y={10} width={8} height={6} style={{ animationDelay: "2.4s" }} />
+      </g>
       <path d="M12 64L12 40L56 64L56 40L100 64L100 40L148 64z" style={v("roof-2")} {...OUTLINE} />
       <rect x={22} y={98} width={58} height={52} style={v("wall-2")} {...OUTLINE} />
       {[106, 114, 122, 130, 138].map((y) => (
@@ -100,7 +106,7 @@ function HardwareWorkshop() {
   );
 }
 
-const DRAW: Record<ProjectSlug, () => React.ReactElement> = {
+export const DRAW: Record<ProjectSlug, () => React.ReactElement> = {
   signlink: AccessibilityLab,
   baseline: LedgerOffice,
   guardian: FraudObservatory,

@@ -65,6 +65,17 @@ a repository or write-up link if one can be public.
 - `content/site.ts → about`: education is written without a graduation date. The resume says May 2026; add "Class of 2026" or a completion date if you want it shown.
 - Earlier-role dates ending "Dec 2025" (PAB, Visionary Hands): confirm these are final.
 
+## Illustrations to replace with real material, if you have it
+
+The workbench, campus, and notebook objects are original illustrations, and
+each is labelled as one. If you have them, these would make the exhibits more
+specific:
+
+- A photo or measured drawing of the Visionary Hands glove, to check the 3D
+  glove's proportions and part placement (or replace the illustration).
+- A real rendered SignLink output for one of the prepared sentences, to put on
+  the workbench monitor instead of the illustrated signer frames.
+
 ## Assets that would improve the site
 
 - **Visionary Hands photos**: the glove, the wiring, and the team demo. The schematic would then become a supplement rather than the only visual.

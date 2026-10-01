@@ -1,4 +1,4 @@
-import Hero from "./Hero";
+import Workbench from "../../workbench/Workbench";
 import SelectedWork from "./SelectedWork";
 import MoreWork from "../../MoreWork";
 import Experience from "../../Experience";
@@ -8,7 +8,7 @@ import About from "../../About";
 export default function LabHome() {
   return (
     <>
-      <Hero />
+      <Workbench />
       <SelectedWork />
       <MoreWork />
       <Experience />

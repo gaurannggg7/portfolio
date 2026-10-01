@@ -33,8 +33,19 @@ npm run build && npm run start
 
 ## View styles
 
-Three compositions share the same content, routes, and interactive exhibits:
-Systems Lab (default), Research Campus, and Field Notes.
+Three experiences share the same content, routes, and interactive exhibits:
+
+- **Systems Lab** (default): a lit 3D workbench (three.js via React Three
+  Fiber, lazy-loaded) with one object per project. A flat SVG bench is the
+  loading poster and the fallback for reduced motion, no WebGL, low-power
+  devices, or by choice; phones get an illustrated card layout.
+- **Research Campus**: an SVG campus map (wide and tall layouts) with a
+  building and sign per project, plus a plain directory.
+- **Field Notes**: an open notebook with tabbed project sheets whose numbered
+  marks point to documented engineering decisions.
+
+`/work` is a plain "Work & résumé" page for quick scanning in every view.
+Exhibit copy lives in `content/exhibits.ts` and `content/notes-annotations.ts`.
 
 - The view is resolved on the server: a valid `?view=lab|campus|notes`
   parameter, then the `view` cookie, then Systems Lab. `proxy.ts` saves a

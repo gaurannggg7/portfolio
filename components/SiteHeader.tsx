@@ -43,14 +43,12 @@ export default function SiteHeader({ view }: { view: View }) {
                 {item.label}
               </Link>
             ))}
-            <a
-              href={site.resume}
-              target="_blank"
-              rel="noopener"
-              className="ml-1.5 rounded-control border border-rule-strong px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-ink"
+            <Link
+              href="/work"
+              className="ml-1.5 rounded-control border border-ink bg-ink px-3 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-90"
             >
-              Resume <span className="sr-only">(PDF, opens in new tab)</span>
-            </a>
+              Work &amp; résumé
+            </Link>
           </nav>
           <div className="ml-3 flex items-center gap-2 border-l border-rule pl-3">
             <span aria-hidden className="label">View</span>
@@ -75,11 +73,23 @@ export default function SiteHeader({ view }: { view: View }) {
         </div>
       </div>
 
+      {/* Always-visible view selector on small screens */}
+      <div className="border-t border-rule lg:hidden">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-1.5 sm:px-8">
+          <span aria-hidden className="label">View</span>
+          <ViewSwitcher view={view} compact />
+        </div>
+      </div>
+
       <div id="mobile-nav" hidden={!open} className="border-t border-rule bg-bg lg:hidden">
-        <div className="mx-auto max-w-6xl px-5 pb-3 pt-4 sm:px-8">
-          <ViewSwitcher view={view} />
-          <nav aria-label="Main" className="mt-3">
+        <div className="mx-auto max-w-6xl px-5 pb-3 pt-2 sm:px-8">
+          <nav aria-label="Main">
             <ul>
+              <li>
+                <Link href="/work" onClick={() => setOpen(false)} className="flex min-h-12 items-center border-b border-rule text-base font-medium text-ink">
+                  Work &amp; résumé
+                </Link>
+              </li>
               {nav.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} onClick={() => setOpen(false)} className="flex min-h-12 items-center border-b border-rule text-base text-ink">
