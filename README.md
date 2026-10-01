@@ -31,6 +31,22 @@ npm run build && npm run start
 - `CONTENT_TODO.md` lists facts that need verification, conflicting sources,
   and assets to add.
 
+## View styles
+
+Three compositions share the same content, routes, and interactive exhibits:
+Systems Lab (default), Research Campus, and Field Notes.
+
+- The view is resolved on the server: a valid `?view=lab|campus|notes`
+  parameter, then the `view` cookie, then Systems Lab. `proxy.ts` saves a
+  valid parameter as the preference; invalid values are ignored.
+- The switcher (header, mobile menu, footer) sets the cookie, updates
+  `?view=` in place, and re-renders without scrolling, keeping the section
+  you were reading in place.
+- Mode-specific layouts live in `components/modes/{lab,campus,notes}`. Shared
+  styling uses tokens in `app/globals.css` (`rounded-panel`, `shadow-panel`,
+  `font-display`, colours), so components don't branch on the view.
+- Light/dark appearance is independent of the view and stored in `localStorage`.
+
 ## Notes
 
 - Theme: `data-theme` on `<html>` is set before paint by an inline script in

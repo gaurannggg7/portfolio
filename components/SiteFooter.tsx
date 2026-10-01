@@ -1,5 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { site } from "@/content/site";
+import type { View } from "@/lib/view";
+import ViewSwitcher from "./view/ViewSwitcher";
 
 const links = [
   { label: "GitHub", href: site.github },
@@ -8,7 +10,7 @@ const links = [
   { label: "Resume", href: site.resume },
 ];
 
-export default function SiteFooter() {
+export default function SiteFooter({ view }: { view: View }) {
   return (
     <footer id="contact" aria-labelledby="contact-heading" className="border-t border-rule bg-surface">
       <div className="mx-auto max-w-6xl px-5 pb-10 pt-16 sm:px-8 sm:pt-20">
@@ -17,7 +19,7 @@ export default function SiteFooter() {
         </h2>
         <a
           href={`mailto:${site.email}`}
-          className="mt-3 inline-block break-all text-2xl font-semibold tracking-tight text-ink underline decoration-accent decoration-2 underline-offset-[6px] transition-colors hover:text-accent sm:text-4xl"
+          className="mt-3 inline-block break-all font-display text-2xl font-semibold tracking-tight text-ink underline decoration-accent decoration-2 underline-offset-[6px] transition-colors hover:text-accent sm:text-4xl"
         >
           {site.email}
         </a>
@@ -36,9 +38,12 @@ export default function SiteFooter() {
             </li>
           ))}
         </ul>
-        <p className="mt-12 border-t border-rule pt-5 text-xs text-ink-3">
-          © {new Date().getFullYear()} {site.name}
-        </p>
+        <div className="mt-12 flex flex-col gap-6 border-t border-rule pt-6 sm:flex-row sm:items-end sm:justify-between">
+          <p className="text-xs text-ink-3">© {new Date().getFullYear()} {site.name}</p>
+          <div className="sm:w-[26rem]">
+            <ViewSwitcher view={view} />
+          </div>
+        </div>
       </div>
     </footer>
   );

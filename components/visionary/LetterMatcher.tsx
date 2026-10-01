@@ -27,7 +27,7 @@ export default function LetterMatcher() {
   };
 
   return (
-    <div className="grid gap-8 rounded-xl border border-rule bg-surface p-5 sm:p-6 lg:grid-cols-12">
+    <div className="grid gap-8 rounded-panel border border-rule bg-surface shadow-panel p-5 sm:p-6 lg:grid-cols-12">
       <div className="lg:col-span-7">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <label className="text-sm text-ink-2" htmlFor={`${uid}-preset`}>
@@ -36,7 +36,7 @@ export default function LetterMatcher() {
               id={`${uid}-preset`}
               value={preset}
               onChange={(e) => loadPreset(e.target.value)}
-              className="mt-1 block min-h-11 w-28 rounded-md border border-rule-strong bg-bg px-2 font-mono text-ink"
+              className="mt-1 block min-h-11 w-28 rounded-control border border-rule-strong bg-bg px-2 font-mono text-ink"
             >
               {LETTERS.map((l) => (
                 <option key={l.char} value={l.char}>

@@ -96,7 +96,7 @@ export default function PipelineExplorer({ stages, label, selected, onSelect, ex
             type="button"
             onClick={startWalkthrough}
             aria-pressed={running}
-            className="inline-flex min-h-10 items-center gap-2 rounded-md border border-rule px-3 text-sm text-ink transition-colors hover:border-rule-strong hover:bg-surface"
+            className="inline-flex min-h-10 items-center gap-2 rounded-control border border-rule px-3 text-sm text-ink transition-colors hover:border-rule-strong hover:bg-surface"
           >
             {running ? <Square aria-hidden className="h-3.5 w-3.5" /> : <Play aria-hidden className="h-3.5 w-3.5" />}
             {running ? "Stop" : "Walk through"}
@@ -155,7 +155,7 @@ export default function PipelineExplorer({ stages, label, selected, onSelect, ex
         id={panelId}
         aria-labelledby={tabId(stage.id)}
         aria-live={running ? "polite" : "off"}
-        className="rounded-lg border border-rule bg-surface px-4 py-5 sm:px-6"
+        className="rounded-panel border border-rule bg-surface px-4 py-5 sm:px-6"
       >
         <motion.div
           key={stage.id}

@@ -28,7 +28,7 @@ export default function TransactionGraph() {
 
   return (
     <div>
-      <p className="rounded-lg border-l-2 border-accent bg-accent-soft px-4 py-3 text-sm leading-relaxed text-ink">
+      <p className="rounded-panel border-l-2 border-accent bg-accent-soft px-4 py-3 text-sm leading-relaxed text-ink">
         <strong className="font-semibold">Synthetic, educational example.</strong> {accounts.length} made-up accounts and{" "}
         {transfers.length} made-up transfers. This is not GuardianAI&apos;s data or its trained model&apos;s output. The
         PageRank scores below are computed on this toy graph in your browser.
@@ -44,7 +44,7 @@ export default function TransactionGraph() {
                 setShowPattern((v) => !v);
                 setSelection(null);
               }}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center gap-2 rounded-control border px-3 text-sm font-medium transition-colors ${
                 showPattern ? "border-accent bg-accent text-on-accent" : "border-rule text-ink hover:border-rule-strong"
               }`}
             >
@@ -62,7 +62,7 @@ export default function TransactionGraph() {
             )}
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-rule bg-surface">
+          <div className="overflow-hidden rounded-panel border border-rule bg-surface shadow-panel">
             <NetworkDiagram
               idPrefix="explorer"
               selection={selection}
@@ -117,7 +117,7 @@ export default function TransactionGraph() {
         </aside>
       </div>
 
-      <details className="mt-8 rounded-lg border border-rule">
+      <details className="mt-8 rounded-panel border border-rule">
         <summary className="flex min-h-11 cursor-pointer items-center gap-2 px-4 text-sm font-medium text-ink">
           <ChevronRight aria-hidden className="chev h-4 w-4 text-ink-3" />
           All {transfers.length} synthetic transfers as a table
@@ -182,7 +182,7 @@ function Inspector({
     const inflow = related.filter((t) => t.to === account.id).reduce((s, t) => s + t.amount, 0);
     const outflow = related.filter((t) => t.from === account.id).reduce((s, t) => s + t.amount, 0);
     return (
-      <section className="rounded-xl border border-rule bg-surface p-5">
+      <section className="rounded-panel border border-rule bg-surface shadow-panel p-5">
         <p className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3">Account</p>
         <h4 className="mt-1 font-mono text-2xl text-ink">{account.label}</h4>
         <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{account.note}</p>
@@ -225,7 +225,7 @@ function Inspector({
   if (transfer) {
     const gap = REPORTING_THRESHOLD - transfer.amount;
     return (
-      <section className="rounded-xl border border-rule bg-surface p-5">
+      <section className="rounded-panel border border-rule bg-surface shadow-panel p-5">
         <p className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3">Transfer</p>
         <h4 className="mt-1 font-mono text-2xl text-ink">
           <button type="button" onClick={() => onSelectAccount(transfer.from)} className="underline decoration-rule-strong underline-offset-4">
@@ -256,7 +256,7 @@ function Inspector({
   }
 
   return (
-    <section className="rounded-xl border border-rule bg-surface p-5">
+    <section className="rounded-panel border border-rule bg-surface shadow-panel p-5">
       {showPattern ? (
         <>
           <p className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3">What gives it away</p>

@@ -43,7 +43,7 @@ export default function SignLinkLab({ between }: { between?: React.ReactNode }) 
             {signExamples.map((e) => (
               <label
                 key={e.id}
-                className={`flex min-h-11 cursor-pointer items-center rounded-md border px-3 text-sm transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)] ${
+                className={`relative flex min-h-11 cursor-pointer items-center rounded-control border px-3 text-sm transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)] ${
                   e.id === exampleId ? "border-ink bg-ink text-bg" : "border-rule text-ink-2 hover:border-rule-strong hover:text-ink"
                 }`}
               >
@@ -61,7 +61,7 @@ export default function SignLinkLab({ between }: { between?: React.ReactNode }) 
           </div>
         </fieldset>
 
-        <div className="mt-6 grid overflow-hidden rounded-xl border border-rule bg-surface lg:grid-cols-2">
+        <div className="mt-6 grid overflow-hidden rounded-panel border border-rule bg-surface shadow-panel lg:grid-cols-2">
           <ol className="divide-y divide-rule lg:border-r lg:border-rule">
             <li className="p-5">
               <p className="label">1 · Transcript</p>

@@ -5,7 +5,7 @@ import type { Project } from "@/content/types";
 export default function Provenance({ project }: { project: Project }) {
   if (!project.provenance) return null;
   return (
-    <details className="mt-4 rounded-lg border border-rule">
+    <details className="mt-4 rounded-panel border border-rule">
       <summary className="flex min-h-11 cursor-pointer items-center gap-2 px-4 text-sm font-medium text-ink">
         <ChevronRight aria-hidden className="chev h-4 w-4 text-ink-3" />
         {project.provenance.summary}

@@ -21,7 +21,7 @@ export default function HeroExhibit() {
   const { setRef, onKeyDown } = useTabKeys(STAGES.length, index, setIndex);
 
   return (
-    <figure className="rounded-xl border border-rule bg-surface shadow-[0_1px_0_var(--rule)]">
+    <figure className="rounded-panel border border-rule bg-surface shadow-panel shadow-[0_1px_0_var(--rule)]">
       <figcaption className="flex items-center justify-between gap-3 border-b border-rule px-4 py-3 sm:px-5">
         <span className="text-sm font-medium text-ink">SignLink</span>
         <span className="label rounded-full border border-rule px-2 py-0.5">Prepared example · not live</span>
@@ -38,7 +38,7 @@ export default function HeroExhibit() {
             role="tablist"
             aria-label="SignLink stages for this example"
             onKeyDown={onKeyDown}
-            className="grid grid-cols-5 gap-1 rounded-lg bg-surface-2 p-1"
+            className="grid grid-cols-5 gap-1 rounded-panel bg-surface-2 p-1"
           >
             {STAGES.map((s, i) => {
               const selected = i === index;
@@ -53,7 +53,7 @@ export default function HeroExhibit() {
                   aria-controls={`${uid}-panel`}
                   tabIndex={selected ? 0 : -1}
                   onClick={() => setIndex(i)}
-                  className={`flex min-h-12 flex-col items-center justify-center rounded-md px-1 text-center transition-colors ${
+                  className={`flex min-h-12 flex-col items-center justify-center rounded-control px-1 text-center transition-colors ${
                     selected ? "bg-surface text-ink shadow-[0_0_0_1px_var(--rule-strong)]" : "text-ink-3 hover:text-ink"
                   }`}
                 >

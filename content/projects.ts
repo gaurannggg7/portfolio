@@ -306,7 +306,154 @@ export const visionary: Project = {
   stack: ["C++", "Arduino framework", "Java", "MPU6050", "Flex sensors", "Python (data extraction)"],
 };
 
-export const featured: Record<ProjectSlug, Project> = { signlink, guardian, visionary };
+const BL_REPO = "https://github.com/gaurannggg7/cpg-cfo-agent";
+
+export const baseline: Project = {
+  slug: "baseline",
+  name: "Baseline",
+  summary: "A multi-agent LLM pipeline that turns a transaction CSV into an executive financial brief.",
+  outcome:
+    "Turns a transaction CSV into an executive financial brief, with the financial figures computed in code rather than by the model.",
+  period: "Jun – Aug 2026",
+  role: "Sole developer",
+  problem:
+    "A raw transaction ledger doesn't say much on its own. Baseline takes a CSV of transactions and returns what a finance lead would ask for: spend by category, anything unusual, runway, and a short written brief.",
+  contribution: [
+    "Built the LangGraph pipeline: three LLM nodes (categorize, detect anomalies, summarize) and a runway node in plain Python.",
+    "Built the FastAPI backend with Firebase ID-token verification, and per-user data isolation enforced in Firestore Security Rules.",
+    "Wrote a 29-case adversarial CSV corpus and used it to take the structured-error pass rate from 62% to 100%, removing all 10 unhandled crashes.",
+    "Moved category totals and runway arithmetic out of the model into pandas and Python after measuring that the model's figures varied between identical runs.",
+    "Restructured the graph into a parallel fan-out/fan-in and documented why the end-to-end gain is capped.",
+  ],
+  howItWorks:
+    "A CSV is validated in the backend first, then three nodes run in parallel: an LLM buckets spend into categories, an LLM flags anomalies with a risk level, and Python computes runway. A final LLM node writes the brief from all three. Totals come from pandas, not the model.",
+  stages: [
+    {
+      id: "parse",
+      label: "Validate CSV",
+      input: "A CSV upload (date, amount, description, category), with a Firebase ID token.",
+      process:
+        "parse_transactions() checks encoding, empty files, duplicate headers, ragged rows, required columns, numeric amounts, and dates. It cleans currency formatting and returns a structured 422 error instead of crashing.",
+      output: "A clean pandas frame, or a machine-readable error code.",
+      tech: ["FastAPI", "pandas", "Firebase Admin SDK"],
+      rationale:
+        "Hostile inputs were crashing the API with unhandled 500s. Validating up front turns every rejected file into a structured error (from eval/RESULTS.md).",
+      source: { label: "backend/main.py", href: `${BL_REPO}/blob/main/backend/main.py` },
+    },
+    {
+      id: "categorize",
+      label: "Categorize spend",
+      input: "Validated transactions.",
+      process: "An LLM call in JSON mode buckets each transaction into COGS, OpEx, S&M, R&D, or Other, using a pinned item schema.",
+      output: "Transactions grouped by category. The category totals are summed in pandas, not by the model.",
+      tech: ["LangGraph node", "Groq (gpt-oss-120b; earlier Llama 3.3 70B)"],
+      rationale:
+        "Model-produced totals disagreed with the real sum by more than 5% in 16 of 19 runs, so totals are now computed in pandas (from eval/RESULTS.md).",
+      source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` },
+    },
+    {
+      id: "anomalies",
+      label: "Detect anomalies",
+      input: "Validated transactions.",
+      process: "An LLM call in JSON mode flags outliers and assigns a Low, Medium, or High risk level with suggested actions.",
+      output: "An anomaly list, a risk level, and actions.",
+      tech: ["LangGraph node", "Groq"],
+      limitation:
+        "Anomaly lists still vary between identical runs, even at temperature 0 with a fixed seed.",
+      source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` },
+    },
+    {
+      id: "runway",
+      label: "Runway (Python)",
+      input: "Monthly spend, monthly revenue, and cash on hand if supplied.",
+      process:
+        "Pure Python: cash on hand divided by net monthly burn. It returns null with a stated reason when cash on hand isn't given, instead of producing a number.",
+      output: "Runway in months, or null with a reason.",
+      tech: ["Python"],
+      rationale:
+        "When the old code asked the model to echo a computed value of 999.0, it never once returned 999.0 across 19 runs. Arithmetic was removed from the model entirely (from the agent.py docstring).",
+      source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` },
+    },
+    {
+      id: "summarize",
+      label: "Executive brief",
+      input: "Categories, anomalies, and runway from the three parallel nodes.",
+      process: "A final LLM call writes the plain-text brief for a finance lead.",
+      output: "Summary text plus the structured results.",
+      tech: ["LangGraph node", "Groq"],
+      rationale:
+        "Four narrow nodes instead of one prompt give each stage a checkable output, so a failure can be traced to a specific stage (from ARCHITECTURE.md).",
+      limitation:
+        "Summary text isn't reproducible: 7 runs of the same input gave 7 different summaries.",
+      source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` },
+    },
+    {
+      id: "serve",
+      label: "Accounts and hosting",
+      input: "Browser requests from guests and signed-in users.",
+      process:
+        "Next.js on Vercel calls the FastAPI backend on Render. Guests can run analyses but can't save them. Signed-in users get a dashboard of past analyses, isolated per user by Firestore rules.",
+      output: "A public demo plus saved per-user history.",
+      tech: ["Next.js 16", "Firebase Auth", "Firestore", "Vercel", "Render"],
+      rationale:
+        "Guest mode exists because a reviewer won't create an account just to try a demo. Isolation lives in the security rules rather than in application code (from ARCHITECTURE.md).",
+      limitation: "The backend runs on Render's free tier, so the first request after it has slept can take 30–60 seconds.",
+      source: { label: "ARCHITECTURE.md", href: `${BL_REPO}/blob/main/ARCHITECTURE.md` },
+    },
+  ],
+  tradeoffs: [
+    {
+      title: "Arithmetic out of the model",
+      body: "Category totals moved to pandas and runway to Python. Those figures became identical across runs; the narrative text did not. Fixing temperature and seed narrowed the drift but didn't remove it.",
+    },
+    {
+      title: "Parallel graph on a rate-limited tier",
+      body: "The three independent nodes now run concurrently, which was verified as a 3× speedup on a synthetic graph. On the free tier, though, the parallel calls hit a shared tokens-per-minute limit together, and the summary step (53% of wall-clock) can't run early, so the end-to-end gain is capped at about 17%.",
+    },
+  ],
+  limitations: [
+    "Measured median latency was about 14 seconds. Only 1 of 18 evaluated runs finished in under 3 seconds.",
+    "The evaluation was run on Llama 3.3 70B, which has since been retired. The model-specific numbers haven't been re-measured on gpt-oss-120b.",
+    "Two Grafana panels (per-agent time, token usage) are defined but never populated, and the Kubernetes manifests have never been applied to a live cluster.",
+  ],
+  results: [
+    {
+      value: "62% → 100%",
+      context:
+        "Structured-error pass rate on a 29-file adversarial CSV corpus (27 evaluated; 2 not run because of API quota). Unhandled crashes went from 10 to 0. This doesn't depend on the model.",
+    },
+    {
+      value: "Deterministic figures",
+      context:
+        "Category totals and runway gave 1 distinct value across 7 identical runs, down from 22 in 22 before. They're computed in code now; the summary text still varies.",
+    },
+    {
+      value: "70% recall",
+      context:
+        "On one planted −$85,000 outlier over 10 runs, measured on the retired Llama 3.3 model. Precision was 88% or 70% depending on the scoring rule.",
+    },
+  ],
+  links: [
+    { label: "Live demo", href: "https://cpg-cfo-agent.vercel.app", kind: "live", note: "Try Demo → Try Sample Data; backend may take 30–60s to wake" },
+    { label: "Repository", href: BL_REPO, kind: "repo", note: "named cpg-cfo-agent, the original working title" },
+    { label: "Evaluation report", href: `${BL_REPO}/blob/main/eval/RESULTS.md`, kind: "repo" },
+    { label: "Architecture notes", href: `${BL_REPO}/blob/main/ARCHITECTURE.md`, kind: "repo" },
+  ],
+  provenance: {
+    summary: "Where these numbers come from",
+    points: [
+      "Per-node times and evaluation results are from the repository's eval/RESULTS.md. They were measured against Llama 3.3 70B at temperature 0, seed 42.",
+      "The pipeline has since moved to gpt-oss-120b. One post-migration smoke test returned in 9.7s, but the full evaluation hasn't been re-run.",
+      "Nothing on this page calls the live API.",
+    ],
+  },
+  stack: ["Python", "LangGraph", "FastAPI", "Groq", "pandas", "Next.js", "Firebase", "Docker"],
+};
+
+export const featured: Record<ProjectSlug, Project> = { signlink, baseline, guardian, visionary };
+
+/** Display order used by every view. */
+export const PROJECT_ORDER: ProjectSlug[] = ["signlink", "baseline", "guardian", "visionary"];
 
 export const moreProjects: MinorProject[] = [
   {

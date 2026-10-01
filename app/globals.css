@@ -4,7 +4,13 @@
    script in layout.tsx). Without JS we fall back to the OS preference. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-:root {
+/* ---------- Tokens -------------------------------------------------------
+   Appearance (data-theme on <html>) and view style (data-view on the page
+   root) are independent. Each view defines a light set and a dark set.     */
+
+/* Systems Lab: near-white / charcoal, cobalt accent */
+:root,
+[data-view="lab"] {
   --bg: #fbfbfa;
   --surface: #ffffff;
   --surface-2: #f2f3f5;
@@ -17,28 +23,15 @@
   --accent-soft: #e9eefc;
   --on-accent: #ffffff;
   --focus: #1f4fd8;
+  --r-panel: 12px;
+  --r-control: 6px;
+  --panel-shadow: 0 0 #0000;
+  --display: var(--font-geist-sans);
   color-scheme: light;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    --bg: #131416;
-    --surface: #1a1b1e;
-    --surface-2: #212327;
-    --ink: #ececee;
-    --ink-2: #babec5;
-    --ink-3: #959aa2;
-    --rule: #2b2d31;
-    --rule-strong: #43464c;
-    --accent: #7d9dff;
-    --accent-soft: #1c2440;
-    --on-accent: #0d1020;
-    --focus: #7d9dff;
-    color-scheme: dark;
-  }
-}
-
-[data-theme="dark"] {
+[data-theme="dark"],
+[data-theme="dark"] [data-view="lab"],
+[data-theme="dark"][data-view="lab"] {
   --bg: #131416;
   --surface: #1a1b1e;
   --surface-2: #212327;
@@ -54,6 +47,115 @@
   color-scheme: dark;
 }
 
+/* Research Campus: daylight paper and grass, night campus in dark mode */
+[data-view="campus"] {
+  --bg: #f2f4ee;
+  --surface: #ffffff;
+  --surface-2: #e7ece0;
+  --ink: #142019;
+  --ink-2: #36443b;
+  --ink-3: #536157;
+  --rule: #d3dbcd;
+  --rule-strong: #93a48d;
+  --accent: #1d6a50;
+  --accent-soft: #dcefe5;
+  --on-accent: #ffffff;
+  --focus: #1d6a50;
+  --r-panel: 0px;
+  --r-control: 0px;
+  --panel-shadow: 4px 4px 0 var(--rule-strong);
+  --display: var(--font-geist-sans);
+  --sky-1: #9fd3f2;
+  --sky-2: #cfeaf8;
+  --grass-1: #8cc26f;
+  --grass-2: #76ad5c;
+  --path: #e8dcc0;
+  --path-edge: #cdbd99;
+  --wall-1: #f4efe2;
+  --wall-2: #d9cfb8;
+  --roof-1: #4f6d8f;
+  --roof-2: #8a4e3c;
+  --roof-3: #5b6b4a;
+  --roof-4: #6a5a8c;
+  --window: #8ec9ec;
+  --trunk: #7a5a3c;
+  --leaf: #4f8f45;
+  color-scheme: light;
+}
+[data-theme="dark"] [data-view="campus"],
+[data-theme="dark"][data-view="campus"] {
+  --bg: #10161a;
+  --surface: #172026;
+  --surface-2: #1e2930;
+  --ink: #e6eef0;
+  --ink-2: #b6c4c8;
+  --ink-3: #91a2a7;
+  --rule: #26333b;
+  --rule-strong: #445660;
+  --accent: #72d2ab;
+  --accent-soft: #163128;
+  --on-accent: #08130e;
+  --focus: #72d2ab;
+  --sky-1: #0b1530;
+  --sky-2: #1b2a4d;
+  --grass-1: #23402c;
+  --grass-2: #1c3524;
+  --path: #4a4637;
+  --path-edge: #383528;
+  --wall-1: #3a3e44;
+  --wall-2: #2c3035;
+  --roof-1: #2c3f57;
+  --roof-2: #5a3227;
+  --roof-3: #344029;
+  --roof-4: #3e3557;
+  --window: #f0c860;
+  --trunk: #4a3826;
+  --leaf: #2d5a33;
+  color-scheme: dark;
+}
+
+/* Field Notes: warm paper, dark ink, red-pencil annotations */
+[data-view="notes"] {
+  --bg: #f3eee3;
+  --surface: #fbf8f1;
+  --surface-2: #ebe4d5;
+  --ink: #221f1a;
+  --ink-2: #48423a;
+  --ink-3: #655d50;
+  --rule: #dcd2bf;
+  --rule-strong: #ad9f87;
+  --accent: #9e3626;
+  --accent-soft: #f2dfd6;
+  --on-accent: #ffffff;
+  --focus: #9e3626;
+  --r-panel: 2px;
+  --r-control: 2px;
+  --panel-shadow: 0 0 #0000;
+  --display: var(--font-newsreader);
+  color-scheme: light;
+}
+[data-theme="dark"] [data-view="notes"],
+[data-theme="dark"][data-view="notes"] {
+  --bg: #1a1815;
+  --surface: #211f1b;
+  --surface-2: #29261f;
+  --ink: #ece5d7;
+  --ink-2: #c6bdab;
+  --ink-3: #a29882;
+  --rule: #34302a;
+  --rule-strong: #554e42;
+  --accent: #e8907a;
+  --accent-soft: #3a241d;
+  --on-accent: #1a0d09;
+  --focus: #e8907a;
+  color-scheme: dark;
+}
+
+[data-view] {
+  background: var(--bg);
+  color: var(--ink);
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -66,8 +168,13 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --radius-panel: var(--r-panel);
+  --radius-control: var(--r-control);
+  --shadow-panel: var(--panel-shadow);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--display), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-silkscreen), var(--font-geist-mono), monospace;
 }
 
 html {
@@ -152,4 +259,13 @@ details[open] > summary .chev {
   .sch-sub {
     font-size: 12px;
   }
+}
+
+/* View-specific section labels (structure is shared; only the marker differs). */
+[data-view="campus"] .sec-index {
+  font-family: var(--font-pixel);
+  color: var(--accent);
+}
+[data-view="notes"] .sec-index::before {
+  content: "§ ";
 }

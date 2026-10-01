@@ -32,6 +32,18 @@ The items below couldn't be verified, conflict between sources, or are missing.
 - SignLink is labelled "Developer · speech-to-sign pipeline" until authorship is confirmed (see above).
 - GuardianAI is labelled "Developer", the minimum the previous site implied. Replace it with your real scope.
 
+## Baseline (added from github.com/gaurannggg7/cpg-cfo-agent)
+
+Identified from the repository README ("Baseline … the repository and package
+names still say cpg-cfo-agent"). It has one contributor (you, 46 commits), a
+live demo, ARCHITECTURE.md, and eval/RESULTS.md. Please confirm or supply:
+
+- **Period**: the site says "Jun – Aug 2026", taken from the repo's first and last commit dates.
+- **Role**: shown as "Sole developer", based on the single-contributor history and the README footer.
+- **README headline vs. measurements**: the README says Baseline produces a brief "in under 3 seconds". Your own eval/RESULTS.md measured a median of about 14s, with 1 of 18 runs under 3s. The site uses the measured numbers. Consider updating the README; the GitHub profile's "<3s" line has the same problem.
+- **Model-specific numbers**: the 70% anomaly recall and the per-node latency means were measured on Llama 3.3 70B, which has been retired. They're labelled that way. Re-running the evaluation on gpt-oss-120b would let them be stated without the caveat.
+- **Problem framing**: the "who it's for" sentence is deliberately generic. If Baseline was built for a specific team or user, say who.
+
 ## GuardianAI details needed
 
 There's no public repository, so the site shows only the architecture and an

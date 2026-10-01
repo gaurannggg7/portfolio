@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { site } from "@/content/site";
-import HeroExhibit from "./signlink/HeroExhibit";
+import HeroExhibit from "../../signlink/HeroExhibit";
 
 export default function Hero() {
   return (
@@ -15,7 +15,7 @@ export default function Hero() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#work"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-ink px-4 text-[15px] font-medium text-bg transition-opacity hover:opacity-90"
+              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-ink px-4 text-[15px] font-medium text-bg transition-opacity hover:opacity-90"
             >
               Explore work <ArrowDown aria-hidden className="h-4 w-4" />
             </a>
@@ -23,7 +23,7 @@ export default function Hero() {
               href={site.resume}
               target="_blank"
               rel="noopener"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-rule-strong px-4 text-[15px] font-medium text-ink transition-colors hover:border-ink"
+              className="inline-flex min-h-11 items-center gap-2 rounded-control border border-rule-strong px-4 text-[15px] font-medium text-ink transition-colors hover:border-ink"
             >
               Resume <span className="sr-only">(PDF, opens in new tab)</span>
               <ArrowUpRight aria-hidden className="h-4 w-4" />

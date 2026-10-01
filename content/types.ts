@@ -1,4 +1,4 @@
-export type ProjectSlug = "signlink" | "guardian" | "visionary";
+export type ProjectSlug = "signlink" | "baseline" | "guardian" | "visionary";
 
 export type LinkKind = "repo" | "live" | "video" | "dataset" | "slides";
 

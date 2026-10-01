@@ -5,7 +5,7 @@ export default function Experience() {
   return (
     <section id="experience" aria-labelledby="experience-heading" className="border-t border-rule">
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-12 lg:gap-10">
-        <h2 id="experience-heading" className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl lg:col-span-3">
+        <h2 id="experience-heading" className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl lg:col-span-3">
           Experience
         </h2>
         <div className="lg:col-span-9">

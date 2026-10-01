@@ -19,7 +19,7 @@ export default function VisionaryArchitecture() {
   return (
     <div className="grid gap-8 xl:grid-cols-2">
       <figure>
-        <div className="rounded-xl border border-rule bg-surface p-3 sm:p-5">
+        <div className="rounded-panel border border-rule bg-surface shadow-panel p-3 sm:p-5">
           <GloveSchematic stage={stage} onSelect={setStage} />
         </div>
         <figcaption className="mt-3">

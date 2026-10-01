@@ -45,13 +45,13 @@ export default function ClipPlayer({
       <p className="mb-2 h-4 font-mono text-[11px] text-ink-3" aria-live="polite">
         {status !== "idle" && `Clip ${String(index + 1).padStart(2, "0")} of ${String(clips.length).padStart(2, "0")} · ${clip.label}`}
       </p>
-      <div className="relative aspect-video w-full overflow-hidden rounded-md border border-rule bg-surface-2">
+      <div className="relative aspect-video w-full overflow-hidden rounded-control border border-rule bg-surface-2">
         {status === "idle" ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center">
             <button
               type="button"
               onClick={() => playFrom(0)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+              className="inline-flex min-h-11 items-center gap-2 rounded-control bg-ink px-4 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
             >
               <Play aria-hidden className="h-4 w-4" />
               Play {clips.length} source clip{clips.length > 1 ? "s" : ""}
@@ -107,7 +107,7 @@ export default function ClipPlayer({
               onClick={() => playFrom(i)}
               aria-current={isCurrent ? "true" : undefined}
               aria-label={`Play clip ${i + 1}: ${c.label}`}
-              className={`min-h-10 min-w-10 rounded-md border px-2.5 font-mono text-xs transition-colors ${
+              className={`min-h-10 min-w-10 rounded-control border px-2.5 font-mono text-xs transition-colors ${
                 isCurrent ? "border-ink bg-ink text-bg" : "border-rule text-ink-2 hover:border-rule-strong hover:text-ink"
               }`}
             >

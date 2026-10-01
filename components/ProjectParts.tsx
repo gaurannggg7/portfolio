@@ -26,7 +26,56 @@ export function LinkList({ links }: { links: ProjectLink[] }) {
   );
 }
 
-/** Title block: purpose first, then role, period, stack, and primary links. */
+/** Project facts shared by every view's intro. */
+export function ProjectFacts({ project, className = "" }: { project: Project; className?: string }) {
+  return (
+    <dl className={`grid content-start gap-4 text-sm ${className}`}>
+      {project.role && (
+        <div>
+          <dt className="label">Role</dt>
+          <dd className="mt-1 text-ink">{project.role}</dd>
+        </div>
+      )}
+      {project.period && (
+        <div>
+          <dt className="label">Period</dt>
+          <dd className="mt-1 text-ink">{project.period}</dd>
+        </div>
+      )}
+      <div>
+        <dt className="label">Stack</dt>
+        <dd className="mt-1 leading-relaxed text-ink-2">{project.stack.join(", ")}</dd>
+      </div>
+      {project.links.length > 0 ? (
+        <div>
+          <dt className="label">Links</dt>
+          <dd className="mt-1 flex flex-wrap gap-x-4">
+            {project.links.slice(0, 2).map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-10 items-center gap-1 font-medium text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink"
+              >
+                {l.label} <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
+              </a>
+            ))}
+          </dd>
+        </div>
+      ) : (
+        project.availability && (
+          <div>
+            <dt className="label">Availability</dt>
+            <dd className="mt-1 leading-relaxed text-ink-2">{project.availability}</dd>
+          </div>
+        )
+      )}
+    </dl>
+  );
+}
+
+/** Systems Lab title block: purpose first, then role, period, stack, and primary links. */
 export function ProjectIntro({ project, kicker }: { project: Project; kicker: string }) {
   return (
     <header className="pb-12 pt-10 sm:pb-16 sm:pt-14">
@@ -39,53 +88,11 @@ export function ProjectIntro({ project, kicker }: { project: Project; kicker: st
       <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-8">
           <p className="label">{kicker}</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{project.name}</h1>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{project.name}</h1>
           <p className="mt-4 max-w-2xl text-xl leading-snug text-ink">{project.outcome}</p>
           <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-ink-2">{project.problem}</p>
         </div>
-        <dl className="grid content-start gap-4 text-sm lg:col-span-4 lg:border-l lg:border-rule lg:pl-8">
-          {project.role && (
-            <div>
-              <dt className="label">Role</dt>
-              <dd className="mt-1 text-ink">{project.role}</dd>
-            </div>
-          )}
-          {project.period && (
-            <div>
-              <dt className="label">Period</dt>
-              <dd className="mt-1 text-ink">{project.period}</dd>
-            </div>
-          )}
-          <div>
-            <dt className="label">Stack</dt>
-            <dd className="mt-1 leading-relaxed text-ink-2">{project.stack.join(", ")}</dd>
-          </div>
-          {project.links.length > 0 ? (
-            <div>
-              <dt className="label">Links</dt>
-              <dd className="mt-1 flex flex-wrap gap-x-4">
-                {project.links.slice(0, 2).map((l) => (
-                  <a
-                    key={l.href}
-                    href={l.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-10 items-center gap-1 font-medium text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink"
-                  >
-                    {l.label} <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
-                  </a>
-                ))}
-              </dd>
-            </div>
-          ) : (
-            project.availability && (
-              <div>
-                <dt className="label">Availability</dt>
-                <dd className="mt-1 leading-relaxed text-ink-2">{project.availability}</dd>
-              </div>
-            )
-          )}
-        </dl>
+        <ProjectFacts project={project} className="lg:col-span-4 lg:border-l lg:border-rule lg:pl-8" />
       </div>
     </header>
   );
@@ -113,10 +120,11 @@ export function ContributionSection({ project, index }: { project: Project; inde
 }
 
 /** Rendered only when the project documents tradeoffs, limitations, or results. */
-export function DecisionsSection({ project, index }: { project: Project; index: string }) {
+export function DecisionsSection({ project, index, extra }: { project: Project; index: string; extra?: React.ReactNode }) {
   if (!project.tradeoffs?.length && !project.limitations?.length && !project.results?.length) return null;
   return (
     <Section id="decisions" index={index} title="Decisions and limitations">
+      {extra && <div className="mb-10">{extra}</div>}
       <div className="grid gap-10 md:grid-cols-2">
         <div className="space-y-8">
           {project.tradeoffs?.length ? (
@@ -188,12 +196,12 @@ export function LinksSection({ project, index }: { project: Project; index: stri
   );
 }
 
-export function ProjectPager({ prev, next }: { prev: Project; next: Project }) {
+export function ProjectPager({ prev, next, noun = "" }: { prev: Project; next: Project; noun?: string }) {
   return (
     <nav aria-label="More projects" className="grid border-t border-rule sm:grid-cols-2">
       <Link href={`/work/${prev.slug}`} className="group flex min-h-24 flex-col justify-center gap-1 py-6 sm:pr-6">
         <span className="label inline-flex items-center gap-1">
-          <ArrowLeft aria-hidden className="h-3 w-3" /> Previous
+          <ArrowLeft aria-hidden className="h-3 w-3" /> Previous{noun && ` ${noun}`}
         </span>
         <span className="text-lg font-semibold tracking-tight text-ink group-hover:text-accent">{prev.name}</span>
       </Link>
@@ -202,7 +210,7 @@ export function ProjectPager({ prev, next }: { prev: Project; next: Project }) {
         className="group flex min-h-24 flex-col justify-center gap-1 border-t border-rule py-6 sm:items-end sm:border-l sm:border-t-0 sm:pl-6 sm:text-right"
       >
         <span className="label inline-flex items-center gap-1">
-          Next <ArrowRight aria-hidden className="h-3 w-3" />
+          Next{noun && ` ${noun}`} <ArrowRight aria-hidden className="h-3 w-3" />
         </span>
         <span className="text-lg font-semibold tracking-tight text-ink group-hover:text-accent">{next.name}</span>
       </Link>
