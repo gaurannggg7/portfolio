@@ -1,55 +1,538 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Theme is driven by data-theme on <html> (set before paint by the inline
+   script in layout.tsx). Without JS we fall back to the OS preference. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Tokens -------------------------------------------------------
+   Appearance (data-theme on <html>) and view style (data-view on the page
+   root) are independent. Each view defines a light set and a dark set.     */
+
+/* Systems Lab: near-white / charcoal, cobalt accent */
+:root,
+[data-view="lab"] {
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --surface-2: #f2f3f5;
+  --ink: #111214;
+  --ink-2: #3d4148;
+  --ink-3: #5f646c;
+  --rule: #e4e6e9;
+  --rule-strong: #c6cad0;
+  --accent: #1f4fd8;
+  --accent-soft: #e9eefc;
+  --on-accent: #ffffff;
+  --focus: #1f4fd8;
+  --r-panel: 12px;
+  --r-control: 6px;
+  --panel-shadow: 0 0 #0000;
+  --display: var(--font-geist-sans);
+  color-scheme: light;
+}
+[data-theme="dark"],
+[data-theme="dark"] [data-view="lab"],
+[data-theme="dark"][data-view="lab"] {
+  --bg: #131416;
+  --surface: #1a1b1e;
+  --surface-2: #212327;
+  --ink: #ececee;
+  --ink-2: #babec5;
+  --ink-3: #959aa2;
+  --rule: #2b2d31;
+  --rule-strong: #43464c;
+  --accent: #7d9dff;
+  --accent-soft: #1c2440;
+  --on-accent: #0d1020;
+  --focus: #7d9dff;
+  color-scheme: dark;
+}
+
+/* Status colours shared by every view: pass / fail readings in exhibits. */
+:root,
+[data-view] {
+  --pass: #1d7048;
+  --fail: #b42318;
+  --fail-soft: #fdecea;
+}
+[data-theme="dark"],
+[data-theme="dark"] [data-view],
+[data-theme="dark"][data-view] {
+  --pass: #6fd3a0;
+  --fail: #ff8f80;
+  --fail-soft: #3a1d1a;
+}
+
+/* Research Campus: daylight paper and grass, night campus in dark mode */
+[data-view="campus"] {
+  --bg: #f2f4ee;
+  --surface: #ffffff;
+  --surface-2: #e7ece0;
+  --ink: #142019;
+  --ink-2: #36443b;
+  --ink-3: #536157;
+  --rule: #d3dbcd;
+  --rule-strong: #93a48d;
+  --accent: #1d6a50;
+  --accent-soft: #dcefe5;
+  --on-accent: #ffffff;
+  --focus: #1d6a50;
+  --r-panel: 0px;
+  --r-control: 0px;
+  --panel-shadow: 4px 4px 0 var(--rule-strong);
+  --display: var(--font-geist-sans);
+  --sky-1: #9fd3f2;
+  --sky-2: #cfeaf8;
+  --grass-1: #8cc26f;
+  --grass-2: #76ad5c;
+  --path: #e8dcc0;
+  --path-edge: #cdbd99;
+  --wall-1: #f4efe2;
+  --wall-2: #d9cfb8;
+  --roof-1: #4f6d8f;
+  --roof-2: #8a4e3c;
+  --roof-3: #5b6b4a;
+  --roof-4: #6a5a8c;
+  --window: #8ec9ec;
+  --cloud: #ffffff;
+  --sun: #ffd45a;
+  --trunk: #7a5a3c;
+  --leaf: #4f8f45;
+  color-scheme: light;
+}
+[data-theme="dark"] [data-view="campus"],
+[data-theme="dark"][data-view="campus"] {
+  --bg: #10161a;
+  --surface: #172026;
+  --surface-2: #1e2930;
+  --ink: #e6eef0;
+  --ink-2: #b6c4c8;
+  --ink-3: #91a2a7;
+  --rule: #26333b;
+  --rule-strong: #445660;
+  --accent: #72d2ab;
+  --accent-soft: #163128;
+  --on-accent: #08130e;
+  --focus: #72d2ab;
+  --sky-1: #0b1530;
+  --sky-2: #1b2a4d;
+  --grass-1: #23402c;
+  --grass-2: #1c3524;
+  --path: #4a4637;
+  --path-edge: #383528;
+  --wall-1: #3a3e44;
+  --wall-2: #2c3035;
+  --roof-1: #2c3f57;
+  --roof-2: #5a3227;
+  --roof-3: #344029;
+  --roof-4: #3e3557;
+  --window: #f0c860;
+  --cloud: #6f7a8f;
+  --sun: #ece6d2;
+  --trunk: #4a3826;
+  --leaf: #2d5a33;
+  color-scheme: dark;
+}
+
+/* Field Notes: warm paper, dark ink, red-pencil annotations */
+[data-view="notes"] {
+  --bg: #f3eee3;
+  --surface: #fbf8f1;
+  --surface-2: #ebe4d5;
+  --ink: #221f1a;
+  --ink-2: #48423a;
+  --ink-3: #655d50;
+  --rule: #dcd2bf;
+  --rule-strong: #ad9f87;
+  --accent: #9e3626;
+  --accent-soft: #f2dfd6;
+  --on-accent: #ffffff;
+  --focus: #9e3626;
+  --r-panel: 2px;
+  --r-control: 2px;
+  --panel-shadow: 0 0 #0000;
+  --display: var(--font-newsreader);
+  color-scheme: light;
+}
+[data-theme="dark"] [data-view="notes"],
+[data-theme="dark"][data-view="notes"] {
+  --bg: #1a1815;
+  --surface: #211f1b;
+  --surface-2: #29261f;
+  --ink: #ece5d7;
+  --ink-2: #c6bdab;
+  --ink-3: #a29882;
+  --rule: #34302a;
+  --rule-strong: #554e42;
+  --accent: #e8907a;
+  --accent-soft: #3a241d;
+  --on-accent: #1a0d09;
+  --focus: #e8907a;
+  color-scheme: dark;
+}
+
+[data-view] {
+  background: var(--bg);
+  color: var(--ink);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-pass: var(--pass);
+  --color-fail: var(--fail);
+  --color-fail-soft: var(--fail-soft);
+  --radius-panel: var(--r-panel);
+  --radius-control: var(--r-control);
+  --shadow-panel: var(--panel-shadow);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--display), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-silkscreen), var(--font-geist-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .bg-grid-pattern {
-    background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    mask-image: radial-gradient(circle at center, black, transparent 80%);
-  }
-}
-
-body {
-  background-color: #000000;
-  color: #ededed;
-}
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+  -webkit-text-size-adjust: 100%;
 }
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Small technical annotation used across exhibits. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Disclosure marker for <details> sections. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
   display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+details > summary .chev {
+  transition: transform 160ms ease;
+}
+details[open] > summary .chev {
+  transform: rotate(90deg);
+}
+
+/* Theme toggle icons: pick by theme in CSS so server and client render identical markup. */
+.theme-icon-dark {
+  display: none;
+}
+[data-theme="dark"] .theme-icon-dark {
+  display: block;
+}
+[data-theme="dark"] .theme-icon-light {
+  display: none;
+}
+
+/* SVG text is sized in user units; enlarge labels when diagrams shrink on phones. */
+@media (max-width: 640px) {
+  .graph-label {
+    font-size: 24px;
+  }
+  .sch-title {
+    font-size: 17px;
+  }
+  .sch-sub {
+    font-size: 12px;
+  }
+}
+
+/* View-specific section labels (structure is shared; only the marker differs). */
+[data-view="campus"] .sec-index {
+  font-family: var(--font-pixel);
+  color: var(--accent);
+}
+[data-view="notes"] .sec-index::before {
+  content: "§ ";
+}
+
+/* Workbench illustration motion: plays once per selection. Reduced motion
+   collapses these to their final frame via the global rule above. */
+.wb-signal {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: wb-draw 2.2s ease-in-out forwards;
+}
+@keyframes wb-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.wb-flow {
+  animation: wb-dash 1.2s linear 2 both;
+}
+@keyframes wb-dash {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.wb-grow {
+  animation: wb-grow 0.8s cubic-bezier(.3,.7,.2,1) both;
+}
+@keyframes wb-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.wb-string {
+  animation: wb-flash 0.6s ease-out both;
+}
+@keyframes wb-flash {
+  from {
+    stroke: #7d7466;
+    stroke-width: 1.2;
+  }
+  to {
+    stroke: #e0453a;
+    stroke-width: 2.4;
+  }
+}
+
+/* Research Campus contextual motion (disabled by reduced motion). */
+.cp-dot {
+  animation: cp-blink 1.8s steps(1) infinite;
+}
+@keyframes cp-blink {
+  0%, 60% { opacity: 1; }
+  30% { opacity: 0.15; }
+}
+.cp-telescope {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: cp-sweep 7s ease-in-out infinite alternate;
+}
+@keyframes cp-sweep {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(8deg); }
+}
+.cp-smoke {
+  animation: cp-rise 3.6s linear infinite;
+}
+@keyframes cp-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
+.cp-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: cp-grow 3s ease-out infinite;
+}
+@keyframes cp-grow {
+  0% { transform: scaleY(0.2); }
+  40%, 100% { transform: scaleY(1); }
+}
+.cp-cloud {
+  animation: cp-drift 90s linear infinite;
+}
+@keyframes cp-drift {
+  from { transform: translateX(-160px); }
+  to { transform: translateX(1300px); }
+}
+.cp-building {
+  transition: transform 200ms ease;
+}
+a:hover > .cp-building,
+a:focus-visible > .cp-building {
+  transform: translateY(-5px);
+}
+a:focus-visible > .cp-ring {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-dot, .cp-telescope, .cp-smoke, .cp-bar, .cp-cloud { animation: none !important; }
+  .cp-smoke { opacity: 0; }
+}
+
+/* Field Notes desk and notebook. */
+[data-view="notes"] {
+  --desk: #ddd2bd;
+}
+[data-theme="dark"] [data-view="notes"],
+[data-theme="dark"][data-view="notes"] {
+  --desk: #121110;
+}
+.nb-surface {
+  background: var(--desk);
+}
+.nb-book {
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  /* stacked page edges under the open book */
+  box-shadow:
+    0 1px 0 var(--rule),
+    0 3px 0 -1px var(--surface-2),
+    0 4px 0 -1px var(--rule-strong),
+    0 6px 0 -2px var(--surface-2),
+    0 7px 0 -2px var(--rule-strong),
+    0 30px 60px -30px rgba(40, 25, 10, 0.55);
+}
+@media (min-width: 1024px) {
+  .nb-book > .nb-page:first-child {
+    background: linear-gradient(90deg, transparent 88%, rgba(60, 40, 20, 0.08));
+  }
+  .nb-book > .nb-page:last-child {
+    background: linear-gradient(270deg, transparent 88%, rgba(60, 40, 20, 0.1));
+    border-left: 1px solid var(--rule);
+  }
+}
+.nb-page + .nb-page {
+  border-top: 1px solid var(--rule);
+}
+@media (min-width: 1024px) {
+  .nb-page + .nb-page {
+    border-top: 0;
+  }
+}
+.nb-tab {
+  background: var(--surface-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px 4px 0 0;
+}
+.nb-tab-on {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+@media (min-width: 1024px) {
+  .nb-tab {
+    border-radius: 0 6px 6px 0;
+    border-left: 0;
+  }
+}
+.nb-turn {
+  animation: nb-turn 280ms ease-out;
+}
+@keyframes nb-turn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) rotate(-0.3deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 5rem;
+  }
+}
+
+/* Research Campus game: four-tone handheld palette, mirrored from sprites.ts. */
+.rpg {
+  --gb-0: #e9f2d6;
+  --gb-1: #a3c47e;
+  --gb-2: #4f7d55;
+  --gb-3: #1e3328;
+}
+[data-theme="dark"] .rpg {
+  --gb-0: #cdd6ea;
+  --gb-1: #7586ab;
+  --gb-2: #38476c;
+  --gb-3: #131a2c;
+}
+.rpg-stage {
+  background: var(--gb-2);
+}
+.rpg-stage:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--focus);
+}
+.rpg-box {
+  background: var(--gb-0);
+  color: var(--gb-3);
+  border: 4px solid var(--gb-3);
+  box-shadow: inset 0 0 0 2px var(--gb-0), inset 0 0 0 4px var(--gb-2);
+}
+.rpg-btn {
+  background: var(--gb-0);
+  color: var(--gb-3);
+  border: 2px solid var(--gb-3);
+  box-shadow: 0 3px 0 var(--gb-3);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.rpg-btn:hover {
+  background: var(--gb-1);
+}
+.rpg-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--gb-3);
+}
+.rpg-btn-primary {
+  background: var(--gb-3);
+  color: var(--gb-0);
+}
+.rpg-btn-primary:hover {
+  background: var(--gb-2);
+}
+.rpg-dpad {
+  display: inline-flex;
+  height: 3.25rem;
+  width: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+.rpg-plate {
+  background: var(--gb-3);
+  color: var(--gb-0);
+  border: 2px solid var(--gb-0);
+}
+.rpg-hint {
+  background: var(--gb-3);
+  color: var(--gb-0);
+}
+.rpg-pad {
+  background: var(--gb-1);
+  border-top: 4px solid var(--gb-3);
 }
