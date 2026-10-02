@@ -47,6 +47,21 @@
   color-scheme: dark;
 }
 
+/* Status colours shared by every view: pass / fail readings in exhibits. */
+:root,
+[data-view] {
+  --pass: #1d7048;
+  --fail: #b42318;
+  --fail-soft: #fdecea;
+}
+[data-theme="dark"],
+[data-theme="dark"] [data-view],
+[data-theme="dark"][data-view] {
+  --pass: #6fd3a0;
+  --fail: #ff8f80;
+  --fail-soft: #3a1d1a;
+}
+
 /* Research Campus: daylight paper and grass, night campus in dark mode */
 [data-view="campus"] {
   --bg: #f2f4ee;
@@ -172,6 +187,9 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-pass: var(--pass);
+  --color-fail: var(--fail);
+  --color-fail-soft: var(--fail-soft);
   --radius-panel: var(--r-panel);
   --radius-control: var(--r-control);
   --shadow-panel: var(--panel-shadow);
@@ -296,6 +314,13 @@ details[open] > summary .chev {
   to {
     stroke-dashoffset: 0;
   }
+}
+.wb-grow {
+  animation: wb-grow 0.8s cubic-bezier(.3,.7,.2,1) both;
+}
+@keyframes wb-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 .wb-string {
   animation: wb-flash 0.6s ease-out both;

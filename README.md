@@ -1,8 +1,12 @@
 # Gaurang Mohan — portfolio
 
-A Next.js site that explains three AI systems with interactive walkthroughs:
-SignLink (speech → ASL clips), GuardianAI (transaction-graph fraud detection,
-shown with synthetic data), and Visionary Hands (a sign-language glove).
+A Next.js portfolio with five featured projects, each with a source-grounded
+exhibit: Bellwether (LLM evaluation and a regression gate, explored through its
+committed results snapshot), the Agentic OSINT Analyst (cited retrieval,
+explored through prerecorded runs), Baseline (a LangGraph financial-analysis
+pipeline), SignLink (speech → ASL clips), and Visionary Hands (a sensor glove).
+GuardianAI, a credit-risk scorecard, SpaceHACK, and client work are in the
+"All projects" catalog.
 
 ## Run locally
 
@@ -20,11 +24,22 @@ npm run build && npm run start
 
 ## Where things live
 
-- `content/` holds all copy and data: project facts, pipeline stages, the
-  SignLink example traces, the synthetic GuardianAI graph, and the glove letter
-  templates (copied from the firmware). Edit text here, not in components.
-- `app/page.tsx` is the concise homepage; `app/work/[slug]/page.tsx` renders
-  the three project pages (`/work/signlink`, `/work/guardian`, `/work/visionary`).
+- `content/` holds all copy and data: project facts and evidence ledgers
+  (`projects.ts`), the shared résumé link (`site.ts → resume`), the SignLink
+  example traces, the synthetic GuardianAI graph, the glove letter templates
+  (copied from the firmware), and two data files copied verbatim from other
+  repositories: `bellwether-snapshot.ts` (from Bellwether's
+  `eval-dashboard/data/snapshot.json`) and `osint-prerecorded.ts` (from the OSINT
+  repo's `demo/prerecorded_responses.json`). Regenerate those rather than edit
+  them; nothing on the site reruns either pipeline or calls either backend.
+- `app/page.tsx` is the homepage; `app/work/[slug]/page.tsx` renders the case
+  studies (`/work/bellwether`, `/osint`, `/baseline`, `/signlink`,
+  `/visionary`, `/guardian`).
+- `docs/SOURCE_MAP.md` maps each claim on the site to the file it rests on and
+  says whether it is implemented, measured, a demonstration, or missing.
+- Résumé: `public/Gaurang_Mohan_AI_Engineer_Portfolio_Resume.docx` is the
+  source; the PDF beside it was exported from it with Microsoft Word. Every
+  résumé link reads `resume` in `content/site.ts`.
 - `components/` holds rendering. Interactive pieces are client components
   (`PipelineExplorer`, `signlink/`, `guardian/`, `visionary/`); section shells
   are server components.
@@ -36,7 +51,7 @@ npm run build && npm run start
 Three experiences share the same content, routes, and interactive exhibits:
 
 - **Systems Lab** (default): a lit 3D workbench (three.js via React Three
-  Fiber, lazy-loaded) with one object per project. A flat SVG bench is the
+  Fiber, lazy-loaded) with five labelled objects in one row. A flat SVG bench is the
   loading poster and the fallback for reduced motion, no WebGL, low-power
   devices, or by choice; phones get an illustrated card layout.
 - **Research Campus**: a playable top-down campus (Canvas 2D, lazy-loaded)

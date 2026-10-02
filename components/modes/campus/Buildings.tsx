@@ -4,6 +4,8 @@ import type { ProjectSlug } from "@/content/types";
 export const LOCATIONS: Record<ProjectSlug, { name: string; blurb: string }> = {
   signlink: { name: "Accessibility Lab", blurb: "Speech in, sign language out." },
   baseline: { name: "Ledger Office", blurb: "Transaction ledgers become briefs." },
+  bellwether: { name: "Evaluation Lab", blurb: "Prompt changes tested before they ship." },
+  osint: { name: "Records Archive", blurb: "Public records, cited and checkable." },
   guardian: { name: "Fraud Observatory", blurb: "Watching how money moves." },
   visionary: { name: "Hardware Workshop", blurb: "A glove that reads letters." },
 };
@@ -106,9 +108,66 @@ function HardwareWorkshop() {
   );
 }
 
+/** Bellwether: a flat-roofed lab with a gauge on the façade and a gate arm at the door. */
+function EvaluationLab() {
+  return (
+    <g>
+      <rect x={14} y={58} width={132} height={92} style={v("wall-1")} {...OUTLINE} />
+      <rect x={8} y={48} width={144} height={12} style={v("roof-1")} {...OUTLINE} />
+      <rect x={110} y={30} width={22} height={18} style={v("wall-2")} {...OUTLINE} />
+      {/* Gauge: needle sits in the red band */}
+      <rect x={24} y={68} width={52} height={40} style={v("surface")} {...OUTLINE} strokeWidth={1.5} />
+      <path d="M32 100a18 18 0 0 1 36 0" fill="none" stroke="var(--ink-3)" strokeWidth={3} shapeRendering="auto" />
+      <path d="M58 86a18 18 0 0 1 10 14" fill="none" stroke="var(--roof-2)" strokeWidth={3} shapeRendering="auto" />
+      <rect x={49} y={84} width={2} height={16} style={{ ...v("ink"), transformOrigin: "50px 100px", transform: "rotate(48deg)" }} />
+      <Windows xs={[92, 120]} ys={[70, 94]} w={18} h={14} />
+      <rect x={70} y={118} width={22} height={32} style={v("roof-1")} {...OUTLINE} />
+      {/* Gate arm across the walkway */}
+      <rect x={100} y={126} width={6} height={24} style={v("ink-2")} />
+      <g style={v("surface")}>
+        <rect x={104} y={126} width={44} height={6} {...OUTLINE} strokeWidth={1.5} />
+      </g>
+      <rect x={114} y={126} width={8} height={6} style={v("roof-2")} />
+      <rect x={130} y={126} width={8} height={6} style={v("roof-2")} />
+    </g>
+  );
+}
+
+/** OSINT: a colonnaded archive with filing drawers and a magnifier sign. */
+function RecordsArchive() {
+  return (
+    <g>
+      <rect x={10} y={140} width={140} height={10} style={v("wall-2")} {...OUTLINE} />
+      <rect x={18} y={70} width={124} height={70} style={v("wall-1")} {...OUTLINE} />
+      <path d="M10 70L80 36L150 70z" style={v("roof-4")} {...OUTLINE} />
+      <rect x={10} y={66} width={140} height={8} style={v("wall-2")} {...OUTLINE} />
+      {[26, 46, 106, 126].map((x) => (
+        <rect key={x} x={x} y={78} width={8} height={62} style={v("wall-2")} {...OUTLINE} strokeWidth={1.5} />
+      ))}
+      {/* Filing drawers either side of the door */}
+      {[84, 96, 108, 120].map((y) => (
+        <g key={y}>
+          <rect x={58} y={y} width={14} height={10} style={v("surface")} {...OUTLINE} strokeWidth={1.2} />
+          <rect x={88} y={y} width={14} height={10} style={v("surface")} {...OUTLINE} strokeWidth={1.2} />
+        </g>
+      ))}
+      <rect x={72} y={108} width={16} height={32} style={v("roof-4")} {...OUTLINE} />
+      {/* Magnifier over a page */}
+      <rect x={64} y={6} width={30} height={26} style={v("surface")} {...OUTLINE} strokeWidth={1.5} />
+      {[12, 18, 24].map((y) => (
+        <rect key={y} x={69} y={y} width={18} height={2} style={v("ink-3")} />
+      ))}
+      <circle cx={92} cy={24} r={8} fill="none" stroke="var(--ink)" strokeWidth={3} shapeRendering="auto" />
+      <rect x={97} y={30} width={4} height={10} style={{ ...v("ink"), transform: "rotate(-40deg)", transformOrigin: "99px 30px" }} />
+    </g>
+  );
+}
+
 export const DRAW: Record<ProjectSlug, () => React.ReactElement> = {
   signlink: AccessibilityLab,
   baseline: LedgerOffice,
+  bellwether: EvaluationLab,
+  osint: RecordsArchive,
   guardian: FraudObservatory,
   visionary: HardwareWorkshop,
 };

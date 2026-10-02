@@ -18,12 +18,13 @@ export default function Experience() {
                     {r.role} <span className="font-normal text-ink-2">· {r.org}</span>
                   </h3>
                   <ul className="mt-2 max-w-2xl space-y-1.5">
-                    {r.points.slice(0, 2).map((pt) => (
+                    {r.points.slice(0, 3).map((pt) => (
                       <li key={pt} className="text-[15px] leading-relaxed text-ink-2">
                         {pt}
                       </li>
                     ))}
                   </ul>
+                  {r.note && <p className="mt-2 text-xs text-ink-3">{r.note}</p>}
                   {r.project && (
                     <Link
                       href={r.project.href}

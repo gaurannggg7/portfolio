@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import type { Project, ProjectLink } from "@/content/types";
+import type { EvidenceKind, Project, ProjectLink } from "@/content/types";
 import Section from "./project/Section";
 
 export function LinkList({ links }: { links: ProjectLink[] }) {
@@ -40,6 +40,15 @@ export function ProjectFacts({ project, className = "" }: { project: Project; cl
         <div>
           <dt className="label">Period</dt>
           <dd className="mt-1 text-ink">{project.period}</dd>
+        </div>
+      )}
+      {project.model && (
+        <div>
+          <dt className="label">Model</dt>
+          <dd className="mt-1 text-ink">{project.model.current}</dd>
+          <dd className="mt-0.5 leading-relaxed text-ink-3">
+            Evaluated on {project.model.evaluated}. {project.model.note}
+          </dd>
         </div>
       )}
       <div>
@@ -215,5 +224,47 @@ export function ProjectPager({ prev, next, noun = "" }: { prev: Project; next: P
         <span className="text-lg font-semibold tracking-tight text-ink group-hover:text-accent">{next.name}</span>
       </Link>
     </nav>
+  );
+}
+
+const EVIDENCE_LABEL: Record<EvidenceKind, string> = {
+  measured: "Measured",
+  implemented: "In the code",
+  demonstration: "Demonstration",
+  "not-measured": "Not measured",
+};
+
+/** What each headline claim rests on, so an engineer can check it. */
+export function EvidenceLedger({ project, index }: { project: Project; index: string }) {
+  if (!project.evidence?.length) return null;
+  return (
+    <Section id="evidence" index={index} title="Evidence" intro="Each claim on this page, what kind of evidence backs it, and where to check it.">
+      <ul className="divide-y divide-rule border-y border-rule">
+        {project.evidence.map((e) => (
+          <li key={e.claim} className="grid gap-1 py-3 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:items-baseline sm:gap-4">
+            <span
+              className={`font-mono text-[11px] uppercase tracking-wide ${
+                e.kind === "measured" ? "text-accent" : e.kind === "not-measured" ? "text-fail" : "text-ink-3"
+              }`}
+            >
+              {EVIDENCE_LABEL[e.kind]}
+            </span>
+            <span className="text-[15px] leading-relaxed text-ink">{e.claim}</span>
+            {e.source ? (
+              <a
+                href={e.source.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-10 items-center gap-1 font-mono text-xs text-ink-2 underline decoration-rule-strong underline-offset-4 hover:text-ink"
+              >
+                {e.source.label} <ArrowUpRight aria-hidden className="h-3 w-3" />
+              </a>
+            ) : (
+              <span className="text-xs text-ink-3">No evidence yet</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }

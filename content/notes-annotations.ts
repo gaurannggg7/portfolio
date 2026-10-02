@@ -27,6 +27,25 @@ export const annotations: Record<ProjectSlug, { figure: string; caption: string;
       { text: "The brief waits for all three nodes, which caps the parallel speedup at about 17%.", source: "eval/RESULTS.md", at: [77.1, 43] },
     ],
   },
+  bellwether: {
+    figure: "Prompt-regression experiment: prompt_v1 against prompt_v2",
+    caption: "From the committed snapshot. 60 synthetic scenarios, deterministic mock runs. Not clinical validation.",
+    notes: [
+      { text: "The gate blocked. The regression CLI exits non-zero at this point, so a deployment pipeline stops.", source: "tests/regression_tests.py", at: [97.5, 7] },
+      { text: "Urgent recall held at 1.0, and all 60 routing decisions were identical: routing follows the conversation's concern signal, which the prompt doesn't touch.", source: "snapshot.json", at: [97.5, 26] },
+      { text: "prompt_v2 led with coping and dropped the disclosure acknowledgement, so mean safety fell from 0.977 to 0.825.", source: "snapshot.json", at: [97.5, 52] },
+      { text: "Hard-gate failures doubled, from 8 to 16 of 60. A failed hard gate can't be averaged away by good empathy scores.", source: "evaluation/scoring.py", at: [97.5, 66] },
+    ],
+  },
+  osint: {
+    figure: "The two-node workflow, from query to cited report",
+    caption: "From agent/graph.py. The reports in the exhibit are prerecorded runs.",
+    notes: [
+      { text: "A keyword guardrail runs before retrieval or any model call. It's a first line of defence, not a classifier.", source: "agent/graph.py", at: [94, 30] },
+      { text: "Top five excerpts. On 17 test queries, hybrid retrieval never beat the better single method (0 wins, 17 ties).", source: "eval/STAGE_5_RESULTS.md", at: [94, 50] },
+      { text: "Only excerpts the report actually cites become citations. The check is structural; it doesn't test whether an excerpt supports the claim.", source: "agent/graph.py", at: [94, 90] },
+    ],
+  },
   guardian: {
     figure: "Fan-out and fan-in through pass-through accounts",
     caption: "Synthetic, educational data. Not GuardianAI's data or model output.",

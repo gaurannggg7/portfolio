@@ -48,7 +48,7 @@ export const exhibits: Record<ProjectSlug, Exhibit> = {
   },
   baseline: {
     slug: "baseline",
-    object: "Ledger, three-cartridge processor, brief",
+    object: "Financial-analysis terminal",
     disclosure: "Illustration of the LangGraph topology in backend/agent.py. No live API call.",
     motion: "The ledger fans out to three stages in parallel, which fan back in to write the brief.",
     motionAction: "Run the fan-out again",
@@ -57,6 +57,30 @@ export const exhibits: Record<ProjectSlug, Exhibit> = {
       { id: "llm", label: "Categorize + Anomalies", role: "Two LLM stages in JSON mode run in parallel. Totals are summed in pandas, not by the model." },
       { id: "python", label: "Runway", role: "Plain Python: cash on hand divided by net monthly burn. No LLM call." },
       { id: "brief", label: "Executive brief", role: "A final LLM call writes the summary from all three results." },
+    ],
+  },
+  bellwether: {
+    slug: "bellwether",
+    object: "Evaluation and regression instrument",
+    disclosure: "Readings from Bellwether's committed snapshot: synthetic scenarios, mock runs. The page does not rerun the pipeline.",
+    motion: "Switch to prompt_v2: the recall dial holds at 1.0, the safety dial drops, and the gate lamp turns red.",
+    motionAction: "Run the comparison again",
+    parts: [
+      { id: "recall", label: "Urgent-recall dial", role: "1.0 for both prompt versions. Routing follows the conversation's concern signal, which the prompt doesn't change." },
+      { id: "safety", label: "Safety dial", role: "Mean safety fell from 0.977 to 0.825. Safety is a hard gate, so a failure can't be averaged away." },
+      { id: "gate", label: "Gate lamp", role: "Blocked: safety, escalation correctness, and hard-gate failure rate regressed. The CLI exits non-zero." },
+    ],
+  },
+  osint: {
+    slug: "osint",
+    object: "Research dossier and evidence console",
+    disclosure: "Prerecorded runs, labelled as such. The exhibit never calls the live backend.",
+    motion: "The magnifier moves from a citation in the report to the excerpt it points at.",
+    motionAction: "Follow the citation again",
+    parts: [
+      { id: "report", label: "Report", role: "Written by the synthesize node. Every claim should cite an excerpt number like [2]." },
+      { id: "excerpts", label: "Excerpt cards", role: "The top five retrieved excerpts, each flagged cited or not, with a link to the original filing." },
+      { id: "lens", label: "Magnifier", role: "A citation only proves the report points at an excerpt. Reading the excerpt is how you check support." },
     ],
   },
   guardian: {
@@ -73,5 +97,5 @@ export const exhibits: Record<ProjectSlug, Exhibit> = {
   },
 };
 
-/** Visual order of exhibits on the bench, left to right. */
-export const BENCH_ORDER: ProjectSlug[] = ["signlink", "visionary", "baseline", "guardian"];
+/** Visual order of exhibits on the bench, left to right. GuardianAI is in the catalog, not on the bench. */
+export const BENCH_ORDER: ProjectSlug[] = ["bellwether", "osint", "baseline", "signlink", "visionary"];

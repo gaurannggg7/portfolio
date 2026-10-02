@@ -18,6 +18,7 @@ export default function About() {
           <div>
             <dt className="label">Education</dt>
             <dd className="mt-1.5 font-medium text-ink">{education.degree}</dd>
+            <dd className="mt-0.5 font-mono text-xs text-ink-3">{education.period}</dd>
             <dd className="mt-0.5 leading-relaxed text-ink-2">{education.school}</dd>
             <dd className="mt-0.5 leading-relaxed text-ink-3">{education.note}</dd>
           </div>

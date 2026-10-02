@@ -23,15 +23,20 @@ export class CampusEngine {
   paused = false;
   /** Held directions, most recent last; the last one wins. */
   private held: Dir[] = [];
+  /** A tap in the facing direction: one step, even if released before TURN_SECONDS. */
+  private queued: Dir | null = null;
 
   press(dir: Dir) {
     this.held = this.held.filter((d) => d !== dir);
     this.held.push(dir);
     // Turn on key-down so a quick tap (released before the next frame) still faces that way.
     const p = this.player;
-    if (!this.paused && !p.moving && p.dir !== dir) {
+    if (this.paused) return;
+    if (!p.moving && p.dir !== dir) {
       p.dir = dir;
       p.turnHeld = 0;
+    } else if (p.dir === dir) {
+      this.queued = dir;
     }
   }
 
@@ -41,6 +46,7 @@ export class CampusEngine {
 
   releaseAll() {
     this.held = [];
+    this.queued = null;
   }
 
   isBlocked(x: number, y: number) {
@@ -58,18 +64,25 @@ export class CampusEngine {
       } else return;
     }
     if (this.paused) return;
-    const want = this.held[this.held.length - 1];
+    const held = this.held[this.held.length - 1];
+    const tapped = !held && this.queued === p.dir;
+    const want = held ?? (tapped ? this.queued : null);
     if (!want) {
       p.turnHeld = 0;
+      this.queued = null;
       return;
     }
     if (want !== p.dir) {
       p.dir = want;
       p.turnHeld = 0;
+      this.queued = null;
       return;
     }
-    p.turnHeld += dt;
-    if (p.turnHeld < TURN_SECONDS) return;
+    if (!tapped) {
+      p.turnHeld += dt;
+      if (p.turnHeld < TURN_SECONDS && this.queued !== p.dir) return;
+    }
+    this.queued = null;
     const [dx, dy] = DELTA[p.dir];
     const nx = p.x + dx;
     const ny = p.y + dy;

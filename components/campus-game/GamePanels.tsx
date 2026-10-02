@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useId, useRef } from "react";
 import { ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { featured } from "@/content/projects";
-import { roles, site } from "@/content/site";
+import { resume, roles, site } from "@/content/site";
 import type { ProjectSlug } from "@/content/types";
 import type { BuildingId } from "./map";
+import { LOCATIONS } from "../modes/campus/Buildings";
 
 /** Modal panel: traps focus while open, closes on Escape, restores focus on close. */
 export function GamePanel({ title, kicker, onClose, children }: { title: string; kicker: string; onClose: () => void; children: React.ReactNode }) {
@@ -117,8 +118,11 @@ export function CareerPanelBody() {
         ))}
       </ul>
       <div className="mt-4 flex flex-wrap gap-2">
-        <a href={site.resume} target="_blank" rel="noopener" className={`${btn} rpg-btn-primary`}>
+        <a href={resume.pdf} target="_blank" rel="noopener" className={`${btn} rpg-btn-primary`}>
           Résumé (PDF) <ArrowUpRight aria-hidden className="h-4 w-4" />
+        </a>
+        <a href={resume.docx} download className={btn}>
+          DOCX
         </a>
         <Link href="/work#experience" className={btn}>
           Full experience
@@ -131,7 +135,7 @@ export function CareerPanelBody() {
 export function KioskPanelBody() {
   return (
     <>
-      <p className="text-[15px] leading-relaxed">Email is the fastest way to reach Gaurang.</p>
+      <p className="text-[15px] leading-relaxed">Email is the fastest way to reach Gaurang. More projects, including GuardianAI, are in the catalog.</p>
       <a href={`mailto:${site.email}`} className="mt-2 inline-block break-all text-lg font-semibold underline underline-offset-4">
         {site.email}
       </a>
@@ -147,6 +151,11 @@ export function KioskPanelBody() {
             </a>
           </li>
         ))}
+        <li>
+          <Link href="/work#all-projects" className={btn}>
+            All projects <ArrowRight aria-hidden className="h-4 w-4" />
+          </Link>
+        </li>
       </ul>
     </>
   );
@@ -155,5 +164,5 @@ export function KioskPanelBody() {
 export function panelFor(id: BuildingId): { title: string; kicker: string; body: React.ReactNode } {
   if (id === "career") return { title: "Experience & résumé", kicker: "Career Office", body: <CareerPanelBody /> };
   if (id === "kiosk") return { title: "Get in touch", kicker: "Contact Kiosk", body: <KioskPanelBody /> };
-  return { title: featured[id].name, kicker: ({ signlink: "Accessibility Lab", baseline: "Ledger Office", guardian: "Fraud Observatory", visionary: "Hardware Workshop" } as const)[id], body: <ProjectPanelBody slug={id} /> };
+  return { title: featured[id].name, kicker: LOCATIONS[id].name, body: <ProjectPanelBody slug={id} /> };
 }

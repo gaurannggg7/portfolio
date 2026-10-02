@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { nav, site } from "@/content/site";
+import { nav, resume, site } from "@/content/site";
 import type { View } from "@/lib/view";
 import ThemeToggle from "./ThemeToggle";
 import ViewSwitcher from "./view/ViewSwitcher";
@@ -98,8 +98,13 @@ export default function SiteHeader({ view }: { view: View }) {
                 </li>
               ))}
               <li>
-                <a href={site.resume} target="_blank" rel="noopener" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-ink">
-                  Resume (PDF)
+                <a href={resume.pdf} target="_blank" rel="noopener" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-ink">
+                  Résumé (PDF)
+                </a>
+              </li>
+              <li>
+                <a href={resume.docx} download onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base text-ink">
+                  Résumé (DOCX)
                 </a>
               </li>
             </ul>

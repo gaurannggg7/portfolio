@@ -3,10 +3,10 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { BENCH_ORDER, exhibits } from "@/content/exhibits";
 import { featured } from "@/content/projects";
-import { site } from "@/content/site";
+import { resume, site } from "@/content/site";
 import type { ProjectSlug } from "@/content/types";
 import ExhibitArt from "./ExhibitArt";
 import ExhibitPanel from "./ExhibitPanel";
@@ -169,10 +169,16 @@ export default function Workbench() {
               <h1 id="hero-name" className="font-display text-4xl font-semibold tracking-tight text-ink xl:text-5xl">
                 {site.name}
               </h1>
-              <p className="mt-2 font-mono text-sm text-accent">{site.role}</p>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
-                This is my workbench. Each object on it is one of my projects, and opens its working demo.
-              </p>
+              <p className="mt-2 text-[17px] leading-snug text-ink">{site.focus}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-3">The five objects below are my featured projects. Select one, or use the list.</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a href={resume.pdf} target="_blank" rel="noopener" className="inline-flex min-h-10 items-center gap-1.5 rounded-control bg-ink px-3.5 text-sm font-medium text-bg hover:opacity-90">
+                  Résumé (PDF) <ArrowUpRight aria-hidden className="h-4 w-4" />
+                </a>
+                <a href="#selected-work" className="inline-flex min-h-10 items-center gap-1.5 rounded-control border border-rule-strong px-3.5 text-sm font-medium text-ink hover:border-ink">
+                  Project list <ArrowDown aria-hidden className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -207,6 +213,9 @@ export default function Workbench() {
                 </button>
               )}
               {use3d && !ready && <span className="label" role="status">Setting up the bench…</span>}
+              <a href="#all-projects" className="inline-flex min-h-11 items-center rounded-control px-2 text-sm text-ink-2 underline underline-offset-4 hover:text-ink">
+                All projects
+              </a>
               <Link href="/work" className="inline-flex min-h-11 items-center gap-1.5 rounded-control border border-ink bg-surface px-3.5 text-sm font-medium text-ink hover:bg-ink hover:text-bg">
                 Work &amp; résumé <ArrowUpRight aria-hidden className="h-4 w-4" />
               </Link>
@@ -219,17 +228,20 @@ export default function Workbench() {
       <div className="lg:hidden">
         <div className="mx-auto max-w-2xl px-5 pb-6 pt-10 sm:px-8">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">{site.name}</h1>
-          <p className="mt-2 font-mono text-sm text-accent">{site.role}</p>
-          <p className="mt-3 text-[16px] leading-relaxed text-ink-2">
-            My workbench: four objects, four projects. Tap one to see what it is, then open its demo.
-          </p>
-          <Link href="/work" className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-control border border-ink px-3.5 text-sm font-medium text-ink">
-            Work &amp; résumé <ArrowUpRight aria-hidden className="h-4 w-4" />
-          </Link>
+          <p className="mt-2 text-lg leading-snug text-ink">{site.focus}</p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink-3">Five featured projects from my workbench. Tap one to see what it is, then open its demo.</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <a href={resume.pdf} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-1.5 rounded-control bg-ink px-3.5 text-sm font-medium text-bg">
+              Résumé (PDF) <ArrowUpRight aria-hidden className="h-4 w-4" />
+            </a>
+            <a href="#all-projects" className="inline-flex min-h-11 items-center rounded-control border border-rule-strong px-3.5 text-sm font-medium text-ink">
+              All projects
+            </a>
+          </div>
         </div>
         <ul className="mx-auto grid max-w-2xl gap-5 px-5 pb-12 sm:grid-cols-2 sm:px-8">
           {BENCH_ORDER.map((slug, i) => (
-            <MobileExhibit key={slug} slug={slug} index={i} />
+            <MobileExhibit key={slug} slug={slug} index={i} wide={i === 0} />
           ))}
         </ul>
       </div>
@@ -251,7 +263,6 @@ function StaticBench({
   animateKey: number;
   interactive: boolean;
 }) {
-  const bench = BENCH_ORDER.filter((s) => s !== "guardian");
   const item = (slug: ProjectSlug, className: string) => {
     const on = selected === slug;
     return (
@@ -279,28 +290,26 @@ function StaticBench({
   };
   return (
     <div className="absolute inset-0">
-      {/* Wall pegboard and bench surface */}
-      <div className="absolute inset-x-[6%] top-[14%] h-[38%] rounded-sm opacity-60" style={{ backgroundImage: "radial-gradient(circle, var(--rule-strong) 2.5px, transparent 3px)", backgroundSize: "26px 26px" }} />
+      {/* Wall pegboard, light bar, and bench surface */}
+      <div className="absolute inset-x-[5%] top-[16%] h-[34%] rounded-sm opacity-60" style={{ backgroundImage: "radial-gradient(circle, var(--rule-strong) 2.5px, transparent 3px)", backgroundSize: "26px 26px" }} />
+      <div className="absolute inset-x-[8%] top-[12%] h-1.5 rounded-full bg-[#fff6e6] shadow-[0_0_40px_10px_rgba(255,236,205,0.35)]" />
       <div className="absolute inset-x-0 bottom-0 h-[34%]" style={{ background: "linear-gradient(#8a5a3a, #6d4429)" }} />
       <div className="absolute inset-x-0 bottom-[34%] h-3" style={{ background: "#9b6a47" }} />
-      {/* Lamp glow */}
-      <div className="absolute left-[2%] top-[18%] h-[70%] w-[50%] rounded-full opacity-40" style={{ background: "radial-gradient(closest-side, rgba(255,226,184,0.9), transparent)" }} />
-      <div className="absolute inset-x-0 bottom-[20%] mx-auto flex max-w-7xl items-end gap-4 px-8">
-        {bench.map((s) => item(s, "w-[27%]"))}
+      <div className="absolute inset-x-0 bottom-[22%] mx-auto grid max-w-7xl grid-cols-5 items-end gap-5 px-10">
+        {BENCH_ORDER.map((s) => item(s, "w-full"))}
       </div>
-      <div className="absolute right-[max(2rem,calc((100vw-80rem)/2+2rem))] top-[24%] w-[24%]">{item("guardian", "w-full")}</div>
     </div>
   );
 }
 
-function MobileExhibit({ slug, index }: { slug: ProjectSlug; index: number }) {
+function MobileExhibit({ slug, index, wide = false }: { slug: ProjectSlug; index: number; wide?: boolean }) {
   const [open, setOpen] = useState(false);
   const [part, setPart] = useState<string | null>(null);
   const [key, setKey] = useState(0);
   const id = useId();
   const p = featured[slug];
   return (
-    <li className="overflow-hidden rounded-panel border border-rule bg-surface shadow-panel">
+    <li className={`overflow-hidden rounded-panel border border-rule bg-surface shadow-panel ${wide ? "sm:col-span-2" : ""}`}>
       <button
         type="button"
         aria-expanded={open}

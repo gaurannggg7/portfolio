@@ -12,7 +12,7 @@ The items below couldn't be verified, conflict between sources, or are missing.
 | GuardianAI "0.99 recall" | Dataset, class balance, split, baseline, threshold, precision at that recall |
 | GuardianAI "98% less manual work" | What was measured, before/after process, who measured it |
 | GuardianAI "6M+ records" | Dataset name and source (PaySim? internal?) |
-| OSINT analyst "90% faster synthesis" | Task, baseline time, sample size |
+| OSINT analyst "90% faster synthesis" | Removed. The OSINT case study now uses only the repository's retrieval evaluation (n = 17) |
 | Visionary Hands "improved accuracy by 30%" | Baseline accuracy, test protocol, number of signers/trials |
 | GitHub profile: "95% gesture-classification accuracy on-device" | Which project, test set, and whether it's the same as the +30% figure |
 | SpaceHACK "revealed 43% underserved zones" | Definition of "underserved" and of the zone set. The README's 43% refers to food-insecure households above the SNAP threshold, a different statistic |
@@ -22,10 +22,10 @@ The items below couldn't be verified, conflict between sources, or are missing.
 
 - **SignLink: offline vs. hosted.** The resume and the old site say "offline", "Gemma-3n (quantized)", "300-sign dictionary". The current repo deploys to Hugging Face Spaces, calls `google/gemma-2b-it` through the HF Inference API, and indexes ~1,540 signs. The site presents both as version history. Please confirm the timeline and when the hosted rebuild happened (the site says "2025 – 2026", inferred from repo activity).
 - **SignLink authorship.** The YouTube demo (youtu.be/33DwsluZMfA) is posted by the account "Prakher Sharma". Was SignLink a team project? If so, the "What I did" list and "Designed and built the pipeline" need to say which parts were yours.
-- **EPICS Elite Pitch.** The resume says "winner"; the GitHub profile says "3rd place — $1,000". The site says "awarded the team $1,000" to stay accurate under both.
-- **LinkedIn URL.** The site uses `linkedin.com/in/gaurangmmohan/` (from the previous site). The GitHub profile links `linkedin.com/in/gaurang-mohan`. Confirm which is correct.
+- **EPICS Elite Pitch.** Resolved by the Oct 2026 résumé: third place, $1,000.
+- **LinkedIn URL.** The site now uses `linkedin.com/in/gaurang-mohan/`, which the Oct 2026 résumé, the GitHub profile, and the Baseline and Bellwether apps all use. The previous site used `gaurangmmohan`. LinkedIn blocks automated checks, so please open it once to confirm.
 - **Visionary Hands "26 letters" and "text and audio".** The committed firmware has a placeholder template for V, Q/T/U share one template, it is committed in `learning_mode = true`, and there is no audio code. If a later build exists, push it or tell me what changed.
-- **Visionary Hands microcontroller.** The pin numbers (GPIO 21/22/23) and `Serial.printf` suggest an ESP32 rather than an Arduino Uno. The site says "microcontroller running the Arduino framework". Confirm the board.
+- **Visionary Hands microcontroller.** Resolved: the Oct 2026 résumé says ESP32, matching the pin usage.
 
 ## Role wording on the site (kept conservative)
 
@@ -60,9 +60,9 @@ a repository or write-up link if one can be public.
 
 ## Time-sensitive wording to review before publishing
 
-- `content/site.ts → roles[0].period`: "Aug 2025 – Present" at APMAC Consulting.
+- `content/site.ts → roles[0]`: now "AI & ML Backend Engineer, Sep 2025 – May 2026" from the Oct 2026 résumé (the old site said "AI & Machine Learning Intern, Aug 2025 – Present").
 - `content/site.ts → availability`: looking for full-time roles; needs OPT / H-1B support.
-- `content/site.ts → about`: education is written without a graduation date. The resume says May 2026; add "Class of 2026" or a completion date if you want it shown.
+- `content/site.ts → education`: now shows May 2026 and cum laude from the Oct 2026 résumé. The résumé omits the Data Science minor the site mentions; confirm it.
 - Earlier-role dates ending "Dec 2025" (PAB, Visionary Hands): confirm these are final.
 
 ## Illustrations to replace with real material, if you have it
@@ -89,3 +89,30 @@ These have READMEs with real detail but weren't on the previous site, so I left
 them off: `AI-Evaluation-Observability-Framework-for-Clinical-AI-Companions`,
 `vehicle-loan-default-prediction` (reports ROC-AUC 0.624 on the Kaggle LT
 dataset), and `cpg-cfo-agent`.
+
+## Résumé and career data (Oct 2026) vs. site
+
+Sources: the Oct 2026 résumé and the master career data (updated 19 Aug 2026).
+Employment accomplishments come from that data; no public code is expected for them.
+
+**Shown, with the context the data gives:**
+- CueAway: 35% better retrieval relevance, 28% fewer irrelevant outputs, recommendation latency under 200 ms, API response time 40% better, 30% fewer redundant model calls, 2.5× throughput. Shown with a note that they are internal measurements. **Missing context to supply if you want it on the page:** how relevance and "irrelevant output" were measured (metric, labelled set, size), the baseline system each percentage compares against, and the load or traffic behind the latency and throughput figures.
+- APMAC: the OAuth2 CRM integration is described as on a feature branch pending merge, as the career data says.
+- Visionary Hands: the 10-person usability test.
+
+**Held back, with the reason:**
+- Visionary Hands "65% → 95% gesture accuracy with a scikit-learn classifier", "60 FPS", "sub-50 ms": the committed firmware does nearest-template matching in C++ and is committed in `learning_mode = true`, with no classifier or timing code. If that work lives in another repository or branch, point me to it.
+- Team size: the career data says 13 ("verify before quoting"); the old site said 7. The site now gives no number.
+- Teaching assistant: the career data describes Agile coaching of 9 teams (on-time delivery 60% → 85%); the site describes weekly labs for 40+ students. Both may be true; tell me which to show.
+- Credit-risk "dual-model" and scorecard details match the repository and are summarised in the catalog.
+
+**Résumé file changes (Oct 2026):** the forced page break before PROJECTS was removed and spacing tightened slightly (top/bottom margin 0.45″ → 0.4″, paragraph spacing 2 → 1.2 pt, section spacing 6.25 → 4.5 pt) so it fits one page; email, LinkedIn, and GitHub are now hyperlinks; the Baseline bullet now reads "Llama 3.3 70B (since migrated to gpt-oss-120b)". Nothing else changed. The location and phone number appear only in the résumé files.
+
+**Baseline model:** the code runs `openai/gpt-oss-120b`; every number in `eval/RESULTS.md` was measured on `llama-3.3-70b-versatile`. The repository README's stack table still says "Groq · Llama 3.3 70B"; update it there.
+
+## Deployed-app notes (checked 2026-10-01)
+
+- Bellwether's GitHub "About" homepage points to `ai-evaluation-observability-framewo-five.vercel.app`, which returns 404. The working dashboard is `bellwether-eval.vercel.app`. Update the repo's homepage field.
+- The OSINT backend (`osint-synthesis-engine.onrender.com`) is in prerecorded mode; only the four example queries work.
+- Baseline's backend health check passed after a cold start (~25 s+). Running an analysis needs guest sign-in, which wasn't exercised.
+- `public/GAURANG-MOHAN_RESUME.pdf` (the old résumé) is no longer linked anywhere but is still served at its old URL in case it was shared. Delete it if you don't need that.

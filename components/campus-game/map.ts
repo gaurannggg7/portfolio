@@ -28,7 +28,8 @@ export const BUILDINGS: Building[] = [
   { id: "signlink", name: "Accessibility Lab", x: 3, y: 3, w: 5, h: 5, door: { x: 5, y: 7 } },
   { id: "career", name: "Career Office", x: 10, y: 4, w: 4, h: 4, door: { x: 11, y: 7 } },
   { id: "kiosk", name: "Contact Kiosk", x: 18, y: 6, w: 2, h: 2, door: { x: 18, y: 7 } },
-  { id: "guardian", name: "Fraud Observatory", x: 24, y: 2, w: 5, h: 6, door: { x: 26, y: 7 } },
+  { id: "osint", name: "Records Archive", x: 24, y: 2, w: 5, h: 6, door: { x: 26, y: 7 } },
+  { id: "bellwether", name: "Evaluation Lab", x: 19, y: 14, w: 4, h: 4, door: { x: 21, y: 17 } },
   { id: "visionary", name: "Hardware Workshop", x: 3, y: 13, w: 5, h: 4, door: { x: 5, y: 16 } },
   { id: "baseline", name: "Ledger Office", x: 24, y: 13, w: 5, h: 4, door: { x: 26, y: 16 } },
 ];
@@ -48,7 +49,7 @@ export const SIGNS: Sign[] = [
     dialogue: {
       speaker: "Welcome sign",
       lines: [
-        "Welcome to the engineering campus. Every building holds one of Gaurang's projects.",
+        "Welcome to the engineering campus. Five buildings hold Gaurang's featured projects; the kiosk lists the rest.",
         "Walk with the arrow keys or WASD. Press E or Enter at a door, sign, or person. Esc closes a panel.",
         "Prefer a list? Use “All projects” above the map. Nothing here needs exploring to reach.",
       ],
@@ -56,7 +57,8 @@ export const SIGNS: Sign[] = [
   },
   { x: 6, y: 8, dialogue: { speaker: "Sign", lines: ["ACCESSIBILITY LAB · SignLink. Speech or text in, sign-language clips out. The door is just to the left."] } },
   { x: 12, y: 8, dialogue: { speaker: "Sign", lines: ["CAREER OFFICE · Experience and résumé. The door is to the left."] } },
-  { x: 27, y: 8, dialogue: { speaker: "Sign", lines: ["FRAUD OBSERVATORY · GuardianAI. Graph features for laundering patterns. The door is to the left."] } },
+  { x: 27, y: 8, dialogue: { speaker: "Sign", lines: ["RECORDS ARCHIVE · Agentic OSINT Analyst. Public-record excerpts, cited and checkable. The door is to the left."] } },
+  { x: 18, y: 17, dialogue: { speaker: "Sign", lines: ["EVALUATION LAB · Bellwether. Prompt versions are compared here before they ship. The door is three steps to the right."] } },
   { x: 6, y: 17, dialogue: { speaker: "Sign", lines: ["HARDWARE WORKSHOP · Visionary Hands. A glove that reads fingerspelled letters. The door is to the left."] } },
   { x: 27, y: 17, dialogue: { speaker: "Sign", lines: ["LEDGER OFFICE · Baseline. Transaction CSVs become financial briefs. The door is to the left."] } },
 ];
@@ -83,8 +85,8 @@ export const NPCS: Npc[] = [
     dialogue: {
       speaker: "Analyst",
       lines: [
-        "The board inside the observatory uses synthetic accounts, not GuardianAI's real data or model output.",
-        "It shows the pattern: one account fans out just under $10,000, and the money fans back in to one collector.",
+        "The archive's reports are replays of four real runs, recorded in September 2026. They're labelled that way.",
+        "A citation only shows the report points at an excerpt. Open the excerpt to judge whether it supports the claim.",
       ],
     },
   },
@@ -98,6 +100,19 @@ export const NPCS: Npc[] = [
       lines: [
         "The glove reads five flex sensors and an MPU6050 motion sensor.",
         "It picks the nearest of 26 letter templates, and only accepts a letter after five matching readings in a row.",
+      ],
+    },
+  },
+  {
+    id: "evaluator",
+    x: 17,
+    y: 12,
+    look: 2,
+    dialogue: {
+      speaker: "Evaluator",
+      lines: [
+        "In the lab's comparison, urgent recall stayed at 1.0 and every routing decision was the same.",
+        "The replies still got worse: hard-gate failures went from 8 to 16 of 60, so the gate blocked prompt_v2. Synthetic scenarios, mock runs.",
       ],
     },
   },
@@ -141,13 +156,13 @@ function buildGround(): Ground[][] {
   fill(26, 17, 1, 1, "path");
   // Pond and flower beds
   fill(9, 14, 4, 3, "water");
-  fill(18, 15, 3, 2, "flowers");
+  fill(17, 15, 2, 2, "flowers");
   fill(13, 19, 6, 1, "flowers");
   fill(1, 10, 2, 1, "flowers");
   // Tree clusters (kept off paths and doors)
   const trees: [number, number][] = [
     [1, 1], [2, 1], [1, 2], [9, 2], [16, 2], [17, 2], [21, 2], [22, 3], [29, 2], [30, 4],
-    [21, 13], [22, 14], [29, 11], [30, 12], [1, 13], [1, 14], [9, 11], [20, 11], [21, 11],
+    [21, 12], [23, 13], [29, 11], [30, 12], [1, 13], [1, 14], [9, 11], [20, 11], [21, 11],
     [2, 20], [3, 20], [9, 20], [22, 20], [28, 20], [29, 20], [11, 12], [29, 15], [19, 4],
   ];
   for (const [x, y] of trees) if (g[y][x] === "grass") g[y][x] = "tree";

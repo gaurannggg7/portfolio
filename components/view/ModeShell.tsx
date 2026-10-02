@@ -1,8 +1,8 @@
-import { Suspense } from "react";
 import type { View } from "@/lib/view";
 import SiteHeader from "../SiteHeader";
 import SiteFooter from "../SiteFooter";
 import ViewSync from "./ViewSync";
+import PageSlot from "./PageSlot";
 
 /**
  * Page frame for every route. The view attribute lives here (not in the root
@@ -12,15 +12,11 @@ export default function ModeShell({ view, children }: { view: View; children: Re
   return (
     <div data-view={view} className="flex min-h-screen flex-col">
       <ViewSync view={view} />
-      <Suspense>
-        <SiteHeader view={view} />
-      </Suspense>
+      <SiteHeader view={view} />
       <main id="main" tabIndex={-1} className="flex-1 outline-none">
-        {children}
+        <PageSlot>{children}</PageSlot>
       </main>
-      <Suspense>
-        <SiteFooter view={view} />
-      </Suspense>
+      <SiteFooter view={view} />
     </div>
   );
 }

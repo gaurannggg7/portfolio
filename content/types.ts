@@ -1,6 +1,6 @@
-export type ProjectSlug = "signlink" | "baseline" | "guardian" | "visionary";
+export type ProjectSlug = "baseline" | "bellwether" | "osint" | "signlink" | "visionary" | "guardian";
 
-export type LinkKind = "repo" | "live" | "video" | "dataset" | "slides";
+export type LinkKind = "repo" | "live" | "video" | "dataset" | "slides" | "doc";
 
 export type ProjectLink = {
   label: string;
@@ -39,6 +39,8 @@ export type Result = {
 export type Project = {
   slug: ProjectSlug;
   name: string;
+  /** Shorter name for tight labels such as notebook tabs. */
+  short?: string;
   summary: string;
   /** One concise outcome or purpose statement for the homepage. */
   outcome: string;
@@ -57,6 +59,20 @@ export type Project = {
   /** Shown when a project has no public code or demo. */
   availability?: string;
   stack: string[];
+  /** Which model the code runs now vs. which model produced the published measurements. */
+  model?: { current: string; evaluated: string; note: string };
+  /** What each headline claim rests on, shown on the case study. */
+  evidence?: Evidence[];
+};
+
+/** One row of a project's evidence ledger: what a claim rests on. */
+export type EvidenceKind = "measured" | "implemented" | "demonstration" | "not-measured";
+
+export type Evidence = {
+  kind: EvidenceKind;
+  claim: string;
+  /** Where to check it: a file or document in the project's repository. */
+  source?: { label: string; href: string };
 };
 
 export type MinorProject = {
@@ -66,6 +82,9 @@ export type MinorProject = {
   stack: string[];
   links: ProjectLink[];
   anchor?: string;
+  /** Internal case study, when one exists. */
+  href?: string;
+  period?: string;
 };
 
 export type Role = {
@@ -74,5 +93,7 @@ export type Role = {
   period: string;
   location?: string;
   points: string[];
+  /** Context for any figures in the points, e.g. where they were measured. */
+  note?: string;
   project?: { label: string; href: string };
 };

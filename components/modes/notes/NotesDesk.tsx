@@ -4,22 +4,31 @@ import Link from "next/link";
 import { useId, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { annotations } from "@/content/notes-annotations";
-import { PROJECT_ORDER, featured } from "@/content/projects";
-import { site } from "@/content/site";
+import { FEATURED, featured } from "@/content/projects";
+import { resume, site } from "@/content/site";
 import type { ProjectSlug } from "@/content/types";
 import { useTabKeys } from "../../useTabKeys";
 import { SignLinkTrace } from "../../previews/ProjectPreview";
 import NetworkDiagram from "../../guardian/NetworkDiagram";
 import GloveSchematic from "../../visionary/GloveSchematic";
 import BaselineDag from "../../baseline/BaselineDag";
+import GateSummary from "../../bellwether/GateSummary";
+import OsintFlow from "../../osint/OsintFlow";
 
 type Tab = "index" | ProjectSlug;
-const TABS: Tab[] = ["index", ...PROJECT_ORDER];
+const TABS: Tab[] = ["index", ...FEATURED];
 
 function Figure({ slug }: { slug: ProjectSlug }) {
   if (slug === "signlink") return <SignLinkTrace />;
   if (slug === "guardian") return <NetworkDiagram idPrefix="notes-fig" showPattern label="Synthetic transaction network with the pattern highlighted." />;
   if (slug === "visionary") return <GloveSchematic stage="match" />;
+  if (slug === "bellwether")
+    return (
+      <div className="pr-9">
+        <GateSummary compact />
+      </div>
+    );
+  if (slug === "osint") return <OsintFlow vertical />;
   return <BaselineDag idPrefix="notes-fig" />;
 }
 
@@ -28,7 +37,7 @@ function Sheet({ slug }: { slug: ProjectSlug }) {
   const [active, setActive] = useState<number | null>(null);
   const p = featured[slug];
   const a = annotations[slug];
-  const n = PROJECT_ORDER.indexOf(slug) + 1;
+  const n = FEATURED.indexOf(slug) + 1;
   return (
     <>
       <div className="nb-page min-w-0 p-6 sm:p-8">
@@ -107,7 +116,7 @@ function IndexSheet({ open }: { open: (t: Tab) => void }) {
           repository documents. Numbered marks on each figure point to those decisions.
         </p>
         <ol className="mt-6 border-t border-ink">
-          {PROJECT_ORDER.map((slug, i) => (
+          {FEATURED.map((slug, i) => (
             <li key={slug} className="border-b border-rule">
               <button type="button" onClick={() => open(slug)} className="group grid min-h-12 w-full grid-cols-[4.5rem_minmax(0,1fr)_auto] items-baseline gap-3 py-2.5 text-left">
                 <span className="font-mono text-xs text-ink-3">Entry {String(i + 1).padStart(2, "0")}</span>
@@ -121,7 +130,7 @@ function IndexSheet({ open }: { open: (t: Tab) => void }) {
       <div className="nb-page min-w-0 p-6 sm:p-8">
         <p className="font-display text-sm italic text-accent">The sheets, at a glance</p>
         <ul className="mt-3 grid grid-cols-2 gap-3">
-          {PROJECT_ORDER.map((slug, i) => (
+          {FEATURED.map((slug, i) => (
             <li key={slug}>
               <button
                 type="button"
@@ -129,9 +138,9 @@ function IndexSheet({ open }: { open: (t: Tab) => void }) {
                 className="group block w-full rounded-panel border border-rule bg-surface p-2 text-left transition-transform hover:-translate-y-0.5 hover:rotate-[-0.6deg] focus-visible:-translate-y-0.5"
               >
                 <div className="pointer-events-none max-h-28 overflow-hidden" aria-hidden>
-                  {slug === "signlink" ? (
+                  {slug === "signlink" || slug === "bellwether" || slug === "osint" ? (
                     <div className="origin-top-left scale-[0.5] w-[200%]">
-                      <SignLinkTrace />
+                      {slug === "signlink" ? <SignLinkTrace /> : <Figure slug={slug} />}
                     </div>
                   ) : (
                     <Figure slug={slug} />
@@ -142,6 +151,16 @@ function IndexSheet({ open }: { open: (t: Tab) => void }) {
               </button>
             </li>
           ))}
+          <li>
+            <a
+              href="#all-projects"
+              className="group flex h-full min-h-32 w-full flex-col justify-end rounded-panel border border-dashed border-rule-strong p-3 text-left hover:border-ink"
+            >
+              <span className="font-mono text-[11px] text-ink-3">Appendix</span>
+              <span className="block font-display text-base text-ink group-hover:text-accent">All projects</span>
+              <span className="text-xs text-ink-3">GuardianAI, credit risk, SpaceHACK, and client work</span>
+            </a>
+          </li>
         </ul>
       </div>
     </>
@@ -154,7 +173,7 @@ export default function NotesDesk() {
   const [tab, setTab] = useState<Tab>("index");
   const index = TABS.indexOf(tab);
   const { setRef, onKeyDown } = useTabKeys(TABS.length, index, (i) => setTab(TABS[i]));
-  const label = (t: Tab) => (t === "index" ? "Index" : featured[t].name);
+  const label = (t: Tab) => (t === "index" ? "Index" : (featured[t].short ?? featured[t].name));
 
   return (
     <section aria-labelledby="hero-name" className="nb-desk">
@@ -165,13 +184,18 @@ export default function NotesDesk() {
             <h1 id="hero-name" className="mt-1 font-display text-5xl font-medium tracking-tight text-ink sm:text-6xl">
               {site.name}
             </h1>
-            <p className="mt-1 font-display text-2xl italic text-ink-2">{site.role}</p>
+            <p className="mt-2 max-w-xl font-display text-2xl italic leading-snug text-ink-2">{site.focus}</p>
           </div>
           <div className="max-w-sm">
-            <p className="text-sm leading-relaxed text-ink-2">Pick a tab to open a project sheet. Hover or focus a decision to find its mark on the figure.</p>
-            <Link href="/work" className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink underline decoration-accent decoration-2 underline-offset-4">
-              Work &amp; résumé <ArrowUpRight aria-hidden className="h-4 w-4" />
-            </Link>
+            <p className="text-sm leading-relaxed text-ink-2">Pick a tab to open a project sheet. Select a decision to find its mark on the figure.</p>
+            <div className="mt-2 flex flex-wrap gap-x-5">
+              <a href={resume.pdf} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink underline decoration-accent decoration-2 underline-offset-4">
+                Résumé (PDF) <ArrowUpRight aria-hidden className="h-4 w-4" />
+              </a>
+              <Link href="/work" className="inline-flex min-h-11 items-center gap-1.5 text-sm text-ink underline decoration-rule-strong underline-offset-4">
+                Work &amp; résumé page
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -185,7 +209,7 @@ export default function NotesDesk() {
             aria-label="Project sheets"
             aria-orientation="vertical"
             onKeyDown={onKeyDown}
-            className="mb-2 flex gap-1 overflow-x-auto pb-1 lg:absolute lg:right-0 lg:top-10 lg:mb-0 lg:w-40 lg:flex-col lg:overflow-visible"
+            className="mb-2 flex flex-wrap gap-1 pb-1 lg:flex-nowrap lg:absolute lg:right-0 lg:top-10 lg:mb-0 lg:w-40 lg:flex-col lg:overflow-visible"
           >
             {TABS.map((t, i) => {
               const on = t === tab;

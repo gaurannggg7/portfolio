@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, RotateCcw, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, RotateCcw, X } from "lucide-react";
 import { exhibits } from "@/content/exhibits";
 import { featured } from "@/content/projects";
 import type { ProjectSlug } from "@/content/types";
@@ -89,6 +89,19 @@ export default function ExhibitPanel({
           {ex.motionAction}
         </button>
       </div>
+      {p.links.some((l) => l.kind === "live" || l.kind === "repo") && (
+        <ul className="mt-1 flex flex-wrap gap-x-4">
+          {p.links
+            .filter((l) => l.kind === "live" || l.kind === "repo")
+            .map((l) => (
+              <li key={l.href}>
+                <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-1 text-sm text-ink-2 underline decoration-rule-strong underline-offset-4 hover:text-ink">
+                  {l.label} <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
+                </a>
+              </li>
+            ))}
+        </ul>
+      )}
       <p className="mt-3 border-t border-rule pt-3 text-xs leading-relaxed text-ink-3">{ex.disclosure}</p>
     </div>
   );

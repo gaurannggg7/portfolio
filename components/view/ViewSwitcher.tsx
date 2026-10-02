@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useTransition } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { VIEWS, VIEW_COOKIE, VIEW_LABELS, VIEW_PARAM, type View } from "@/lib/view";
 
 const SHORT: Record<View, string> = { lab: "Lab", campus: "Campus", notes: "Notes" };
@@ -28,7 +28,6 @@ export default function ViewSwitcher({ view, compact = false }: { view: View; co
   const uid = useId();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
 
   // After a switch re-renders the page, put the same section back where it was.
@@ -51,7 +50,9 @@ export default function ViewSwitcher({ view, compact = false }: { view: View; co
     try {
       if (anchor) sessionStorage.setItem(ANCHOR_KEY, JSON.stringify(anchor));
     } catch {}
-    const params = new URLSearchParams(searchParams.toString());
+    // Read the query at click time instead of via useSearchParams, which would
+    // make the header suspend during server rendering and stream in late.
+    const params = new URLSearchParams(window.location.search);
     params.set(VIEW_PARAM, next);
     startTransition(() => {
       router.replace(`${pathname}?${params.toString()}${window.location.hash}`, { scroll: false });

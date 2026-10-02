@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
-import { accounts, transfers } from "@/content/guardian-graph";
+import { BENCH_ORDER, exhibits } from "@/content/exhibits";
+import { featured } from "@/content/projects";
 import type { ProjectSlug } from "@/content/types";
-import { cardTexture, corkTexture, labelTexture, paperTexture, pegboardTexture, signScreenTexture, transcriptTexture, woodTexture } from "./textures";
+import { dossierTexture, instrumentFaceTexture, paperTexture, pegboardTexture, placardTexture, signScreenTexture, terminalScreenTexture, transcriptTexture, woodTexture } from "./textures";
 
 export type SceneProps = {
   selected: ProjectSlug | null;
@@ -28,36 +29,23 @@ const ACCENT_HOT = new THREE.Color("#7f9cff");
 
 /* ---------- Layout --------------------------------------------------------- */
 
-const POS: Record<ProjectSlug, THREE.Vector3> = {
-  signlink: new THREE.Vector3(-1.55, 0, 0.1),
-  visionary: new THREE.Vector3(-0.38, 0, 0.32),
-  baseline: new THREE.Vector3(0.9, 0, 0.18),
-  guardian: new THREE.Vector3(1.62, 1.02, -0.93),
-};
+/** Five exhibits in one row, evenly spaced along the bench. */
+const SPACING = 0.9;
+const X = Object.fromEntries(BENCH_ORDER.map((s, i) => [s, (i - (BENCH_ORDER.length - 1) / 2) * SPACING])) as Partial<Record<ProjectSlug, number>>;
+const at = (slug: ProjectSlug) => X[slug] ?? 0;
 
-const LABEL_ANCHOR: Record<ProjectSlug, THREE.Vector3> = {
-  signlink: new THREE.Vector3(-1.2, 0.82, -0.2),
-  visionary: new THREE.Vector3(-0.38, 0.5, 0.32),
-  baseline: new THREE.Vector3(0.9, 0.55, 0.18),
-  guardian: new THREE.Vector3(1.62, 1.5, -0.9),
-};
+const POS = (slug: ProjectSlug) => new THREE.Vector3(at(slug), 0, 0.02);
+/** Labels sit on one line above the row. */
+const LABEL_ANCHOR = (slug: ProjectSlug) => new THREE.Vector3(at(slug), 0.56, -0.05);
 
-const OVERVIEW = { pos: new THREE.Vector3(0.05, 1.7, 4.4), target: new THREE.Vector3(0.05, 0.5, -0.25) };
+const OVERVIEW = { pos: new THREE.Vector3(0, 1.45, 4.45), target: new THREE.Vector3(0, 0.42, -0.1) };
 // The panel covers the right third of the stage, so each focus shot is
-// shifted right (object appears left of centre) by FOCUS_SHIFT.
-const FOCUS_SHIFT = new THREE.Vector3(0.42, 0, 0);
-const FOCUS_RAW: Record<ProjectSlug, { pos: THREE.Vector3; target: THREE.Vector3 }> = {
-  signlink: { pos: new THREE.Vector3(-1.2, 1.15, 2.1), target: new THREE.Vector3(-1.5, 0.42, 0) },
-  visionary: { pos: new THREE.Vector3(-0.3, 1.05, 1.75), target: new THREE.Vector3(-0.38, 0.22, 0.28) },
-  baseline: { pos: new THREE.Vector3(0.98, 1.05, 1.85), target: new THREE.Vector3(0.9, 0.22, 0.15) },
-  guardian: { pos: new THREE.Vector3(1.35, 1.2, 1.25), target: new THREE.Vector3(1.6, 1.0, -0.95) },
-};
-const FOCUS = Object.fromEntries(
-  (Object.keys(FOCUS_RAW) as ProjectSlug[]).map((k) => {
-    const shift = FOCUS_SHIFT.clone().multiplyScalar(k === "guardian" ? 1.25 : 1);
-    return [k, { pos: FOCUS_RAW[k].pos.clone().add(shift), target: FOCUS_RAW[k].target.clone().add(shift) }];
-  }),
-) as Record<ProjectSlug, { pos: THREE.Vector3; target: THREE.Vector3 }>;
+// shifted right (the object appears left of centre).
+const FOCUS_SHIFT = 0.4;
+const focusFor = (slug: ProjectSlug) => ({
+  pos: new THREE.Vector3(at(slug) + FOCUS_SHIFT, 1.2, 2.3),
+  target: new THREE.Vector3(at(slug) + FOCUS_SHIFT, 0.2, 0.05),
+});
 
 /* ---------- Small helpers -------------------------------------------------- */
 
@@ -140,7 +128,7 @@ function Plinth({ slug, selected, hovered, children, onSelect, onHover, radius =
 function Room({ dark }: { dark: boolean }) {
   const wood = useMemo(() => woodTexture(dark ? "#5b3a26" : "#8a5a3a", dark ? "#2a170c" : "#4a2a16"), [dark]);
   const peg = useMemo(() => pegboardTexture(dark ? "#2a2c31" : "#d6d3cb", dark ? "#15161a" : "#a9a59b"), [dark]);
-  const top = useRounded(4.6, 0.1, 1.7, 0.03);
+  const top = useRounded(5.0, 0.1, 1.7, 0.03);
   return (
     <group>
       {/* Wall */}
@@ -148,9 +136,9 @@ function Room({ dark }: { dark: boolean }) {
         <planeGeometry args={[14, 6]} />
         <meshStandardMaterial color={dark ? "#1b1d22" : "#e8e6e1"} roughness={0.95} />
       </mesh>
-      {/* Pegboard */}
-      <mesh position={[0.75, 1.0, -1.18]} receiveShadow>
-        <boxGeometry args={[3.2, 1.05, 0.03]} />
+      {/* Pegboard, centred behind the row */}
+      <mesh position={[0, 1.02, -1.18]} receiveShadow>
+        <boxGeometry args={[4.7, 1.0, 0.03]} />
         <meshStandardMaterial map={peg} roughness={0.85} />
       </mesh>
       {/* Bench top */}
@@ -159,7 +147,7 @@ function Room({ dark }: { dark: boolean }) {
       </mesh>
       {/* Front apron */}
       <mesh position={[0, -0.24, 0.73]} receiveShadow>
-        <boxGeometry args={[4.5, 0.28, 0.04]} />
+        <boxGeometry args={[4.9, 0.28, 0.04]} />
         <meshStandardMaterial color={dark ? "#3c2618" : "#6f4528"} roughness={0.7} />
       </mesh>
       {/* Floor shadow catcher far below for depth */}
@@ -171,54 +159,48 @@ function Room({ dark }: { dark: boolean }) {
   );
 }
 
-/** Desk lamp: the scene's key light and focal point. */
-function Lamp({ dark }: { dark: boolean }) {
+/** One soft pool of light per exhibit, from the light bar above. No shadows: the key light casts those. */
+function BenchLights({ dark, selected }: { dark: boolean; selected: ProjectSlug | null }) {
+  return (
+    <>
+      {BENCH_ORDER.map((slug) => (
+        <PoolLight key={slug} x={at(slug)} intensity={(dark ? 5.5 : 2.6) * (selected && selected !== slug ? 0.45 : 1)} />
+      ))}
+    </>
+  );
+}
+
+function PoolLight({ x, intensity }: { x: number; intensity: number }) {
   const light = useRef<THREE.SpotLight>(null);
   const target = useMemo(() => new THREE.Object3D(), []);
   useEffect(() => {
-    target.position.set(-0.1, 0, 0.1);
+    target.position.set(x, 0, 0.05);
     if (light.current) light.current.target = target;
-  }, [target]);
-  const metal = <meshStandardMaterial color={dark ? "#2b2e35" : "#2f3339"} metalness={0.7} roughness={0.35} />;
+  }, [target, x]);
+  useFrame((_, dt) => {
+    if (light.current) light.current.intensity = THREE.MathUtils.damp(light.current.intensity, intensity, 4, dt);
+  });
   return (
-    <group position={[-2.05, 0, -0.75]}>
+    <>
       <primitive object={target} />
-      <mesh position={[0, 0.03, 0]} castShadow>
-        <cylinderGeometry args={[0.16, 0.18, 0.05, 32]} />
-        {metal}
+      <spotLight ref={light} position={[x, 1.6, -0.75]} angle={0.42} penumbra={0.9} intensity={intensity} distance={4} decay={1.4} color="#fff1dc" />
+    </>
+  );
+}
+
+/** Tent card in front of each exhibit: number, name, and what the object is. */
+function Placard({ slug, index, dark }: { slug: ProjectSlug; index: number; dark: boolean }) {
+  const tex = useMemo(() => placardTexture(String(index + 1).padStart(2, "0"), featured[slug].name, exhibits[slug].object, dark), [slug, index, dark]);
+  return (
+    <group position={[at(slug), 0, 0.5]} rotation-x={-0.42}>
+      <mesh position-y={0.07} castShadow>
+        <boxGeometry args={[0.46, 0.148, 0.006]} />
+        <meshStandardMaterial color={dark ? "#23262c" : "#fbfaf6"} roughness={0.8} />
       </mesh>
-      <mesh position={[0.08, 0.5, 0]} rotation-z={-0.35} castShadow>
-        <cylinderGeometry args={[0.018, 0.018, 1.0, 12]} />
-        {metal}
+      <mesh position={[0, 0.07, 0.0035]}>
+        <planeGeometry args={[0.45, 0.14]} />
+        <meshStandardMaterial map={tex} roughness={0.8} />
       </mesh>
-      <mesh position={[0.48, 1.0, 0.12]} rotation={[0.25, 0, -1.2]} castShadow>
-        <cylinderGeometry args={[0.016, 0.016, 0.85, 12]} />
-        {metal}
-      </mesh>
-      <group position={[0.86, 1.05, 0.3]} rotation={[0.55, 0, -0.95]}>
-        <mesh castShadow>
-          <coneGeometry args={[0.15, 0.22, 32, 1, true]} />
-          <meshStandardMaterial color={dark ? "#d6d9de" : "#26292f"} metalness={0.4} roughness={0.4} side={THREE.DoubleSide} />
-        </mesh>
-        <mesh position-y={-0.07}>
-          <sphereGeometry args={[0.05, 16, 16]} />
-          <meshBasicMaterial color="#fff2d6" toneMapped={false} />
-        </mesh>
-      </group>
-      <spotLight
-        ref={light}
-        position={[0.95, 1.0, 0.36]}
-        angle={0.95}
-        penumbra={0.7}
-        intensity={dark ? 38 : 22}
-        distance={7}
-        decay={1.6}
-        color="#ffe2b8"
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-bias={-0.0004}
-      />
     </group>
   );
 }
@@ -393,150 +375,211 @@ function VisionaryExhibit({ part, onPart }: { part: string | null; onPart: (p: s
   );
 }
 
-function BaselineExhibit({ active, runKey }: { active: boolean; runKey: number }) {
+/** Baseline: a terminal with a deep housing, a ledger feeding in, and the brief coming out. */
+function BaselineTerminal({ active, runKey }: { active: boolean; runKey: number }) {
+  const screen = useMemo(() => terminalScreenTexture(), []);
   const ledger = useMemo(() => paperTexture("ledger.csv"), []);
   const brief = useMemo(() => paperTexture("BRIEF", 6), []);
-  const labels = useMemo(() => ({
-    cat: labelTexture("CATEGORIZE", "#1f3fa8", "#ffffff"),
-    anom: labelTexture("ANOMALIES", "#1f3fa8", "#ffffff"),
-    run: labelTexture("RUNWAY·PY", "#2b2e35", "#ffffff"),
-  }), []);
-  const housing = useRounded(0.46, 0.12, 0.3, 0.02);
-  const carts: { x: number; tex: THREE.Texture; llm: boolean }[] = [
-    { x: -0.14, tex: labels.cat, llm: true },
-    { x: 0, tex: labels.anom, llm: true },
-    { x: 0.14, tex: labels.run, llm: false },
-  ];
-  const start = new THREE.Vector3(-0.36, 0.08, 0.05);
-  const end = new THREE.Vector3(0.44, 0.04, 0.05);
-  const fan = useMemo(
-    () =>
-      carts.map((c) => ({
-        in: new THREE.CatmullRomCurve3([start, new THREE.Vector3(-0.3, 0.2, 0.05), new THREE.Vector3(c.x, 0.32, 0)]),
-        out: new THREE.CatmullRomCurve3([new THREE.Vector3(c.x, 0.32, 0), new THREE.Vector3(0.3, 0.2, 0.05), end]),
-      })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const housing = useRounded(0.46, 0.34, 0.34, 0.03);
+  const bezel = useRounded(0.42, 0.29, 0.02, 0.012);
+  const kb = useRounded(0.42, 0.025, 0.14, 0.01);
+  const into = useMemo(() => new THREE.CatmullRomCurve3([new THREE.Vector3(-0.33, 0.04, 0.12), new THREE.Vector3(-0.28, 0.22, 0.1), new THREE.Vector3(-0.08, 0.3, 0.12)]), []);
+  const out = useMemo(() => new THREE.CatmullRomCurve3([new THREE.Vector3(0.08, 0.3, 0.12), new THREE.Vector3(0.28, 0.2, 0.14), new THREE.Vector3(0.32, 0.04, 0.2)]), []);
   return (
     <group>
-      {/* Ledger stack */}
-      <group position={[-0.38, 0, 0.05]} rotation-y={0.12}>
-        {[0, 1, 2, 3].map((i) => (
-          <mesh key={i} position={[i * 0.004, 0.004 + i * 0.006, -i * 0.003]} rotation-x={-Math.PI / 2} receiveShadow castShadow>
-            <planeGeometry args={[0.2, 0.26]} />
-            <meshStandardMaterial map={i === 3 ? ledger : undefined} color={i === 3 ? "#ffffff" : "#ece8de"} roughness={0.9} side={THREE.DoubleSide} />
+      {/* Housing, tilted back slightly */}
+      <group position={[0, 0.2, -0.08]} rotation-x={-0.08}>
+        <mesh geometry={housing} castShadow receiveShadow>
+          <meshStandardMaterial color="#2a2d34" metalness={0.3} roughness={0.5} />
+        </mesh>
+        <mesh geometry={bezel} position-z={0.17}>
+          <meshStandardMaterial color="#17191e" roughness={0.5} />
+        </mesh>
+        <mesh position-z={0.181}>
+          <planeGeometry args={[0.38, 0.25]} />
+          <meshStandardMaterial map={screen} emissive="#ffffff" emissiveMap={screen} emissiveIntensity={active ? 0.8 : 0.55} roughness={0.3} />
+        </mesh>
+      </group>
+      <mesh position={[0, 0.015, -0.08]} castShadow receiveShadow>
+        <boxGeometry args={[0.3, 0.03, 0.22]} />
+        <meshStandardMaterial color="#22252b" roughness={0.6} />
+      </mesh>
+      {/* Keyboard */}
+      <mesh geometry={kb} position={[0, 0.013, 0.2]} rotation-x={0.06} castShadow receiveShadow>
+        <meshStandardMaterial color="#3a3f48" roughness={0.6} />
+      </mesh>
+      {/* Ledger in, brief out */}
+      <group position={[-0.33, 0, 0.14]} rotation-y={0.18}>
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[i * 0.004, 0.003 + i * 0.005, -i * 0.003]} rotation-x={-Math.PI / 2} receiveShadow castShadow>
+            <planeGeometry args={[0.15, 0.2]} />
+            <meshStandardMaterial map={i === 2 ? ledger : undefined} color={i === 2 ? "#ffffff" : "#ece8de"} roughness={0.9} side={THREE.DoubleSide} />
           </mesh>
         ))}
       </group>
-      {/* Processor with three cartridges */}
-      <mesh geometry={housing} position={[0, 0.06, 0]} castShadow receiveShadow>
-        <meshStandardMaterial color="#2a2d34" metalness={0.35} roughness={0.45} />
-      </mesh>
-      {carts.map((c) => (
-        <group key={c.x} position={[c.x, 0.2, 0]}>
-          <mesh castShadow>
-            <boxGeometry args={[0.1, 0.18, 0.2]} />
-            <meshStandardMaterial color={c.llm ? "#2f56e0" : "#3b3f48"} metalness={0.2} roughness={0.4} />
-          </mesh>
-          <mesh position={[0, 0.0, 0.101]}>
-            <planeGeometry args={[0.095, 0.024]} />
-            <meshBasicMaterial map={c.tex} toneMapped={false} />
-          </mesh>
-          <mesh position={[0, 0.07, 0.101]}>
-            <circleGeometry args={[0.008, 12]} />
-            <meshBasicMaterial color={active ? "#9fffc8" : "#5d6270"} toneMapped={false} />
-          </mesh>
-        </group>
-      ))}
-      {/* Output tray with the brief */}
-      <group position={[0.44, 0, 0.05]} rotation-y={-0.12}>
-        <mesh position-y={0.012} castShadow receiveShadow>
-          <boxGeometry args={[0.24, 0.024, 0.3]} />
+      <group position={[0.33, 0, 0.2]} rotation-y={-0.18}>
+        <mesh position-y={0.01} castShadow receiveShadow>
+          <boxGeometry args={[0.17, 0.02, 0.22]} />
           <meshStandardMaterial color="#3a3d44" roughness={0.5} />
         </mesh>
-        <mesh position-y={0.026} rotation-x={-Math.PI / 2} receiveShadow>
-          <planeGeometry args={[0.19, 0.25]} />
+        <mesh position-y={0.022} rotation-x={-Math.PI / 2}>
+          <planeGeometry args={[0.14, 0.19]} />
           <meshStandardMaterial map={brief} roughness={0.9} />
         </mesh>
       </group>
-      {fan.map((f, i) => (
-        <group key={i}>
-          <Pulse curve={f.in} active={active} runKey={runKey} duration={0.9} />
-          <Pulse curve={f.out} active={active} runKey={runKey} delay={0.9 + (i === 2 ? 0.05 : i * 0.15)} duration={0.9} />
-        </group>
-      ))}
+      <Pulse curve={into} active={active} runKey={runKey} duration={0.8} />
+      <Pulse curve={out} active={active} runKey={runKey} delay={1.0} duration={0.8} />
     </group>
   );
 }
 
-function GuardianExhibit({ active, runKey }: { active: boolean; runKey: number }) {
-  const cork = useMemo(() => corkTexture(), []);
-  const W = 1.0;
-  const H = 0.68;
-  // Map synthetic graph coordinates (≈ 50..620 × 28..388) onto the board.
-  const at = (x: number, y: number) => new THREE.Vector3(((x - 335) / 600) * W * 0.92, (-(y - 208) / 380) * H * 0.92, 0.03);
-  const byId = Object.fromEntries(accounts.map((a) => [a.id, a]));
-  const cards = useMemo(
-    () => accounts.map((a) => ({ id: a.id, pos: at(a.x, a.y), tex: cardTexture(a.label, a.inPattern ? (a.id === "C1" ? "collector" : a.id === "S1" ? "source" : "pass-through") : "ordinary", a.inPattern) })),
-    [],
-  );
-  const strings = useMemo(
-    () => transfers.map((t) => ({ t, a: at(byId[t.from].x, byId[t.from].y), b: at(byId[t.to].x, byId[t.to].y) })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  const mats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+const dialAngle = (v: number) => ((120 - 240 * v) * Math.PI) / 180;
+
+/** Bellwether: an instrument with two dials and a gate lamp. Selecting it plays prompt_v1 → prompt_v2. */
+function BellwetherInstrument({ active, runKey, part }: { active: boolean; runKey: number; part: string | null }) {
+  const face = useMemo(() => instrumentFaceTexture(), []);
+  const body = useRounded(0.62, 0.3, 0.26, 0.03);
+  const safety = useRef<THREE.Group>(null);
+  const recall = useRef<THREE.Group>(null);
+  const lamp = useRef<THREE.MeshStandardMaterial>(null);
   const start = useRef(0);
   useEffect(() => {
     start.current = performance.now() / 1000;
   }, [runKey, active]);
-  // Light the pattern's strings in order: fan-out first, then fan-in.
-  useFrame(() => {
+  useFrame((_, dt) => {
     const t = performance.now() / 1000 - start.current;
-    strings.forEach((s, i) => {
-      const m = mats.current[i];
-      if (!m) return;
-      const order = s.t.inPattern ? (s.t.from === "S1" ? 0 : 1) : -1;
-      const lit = active && order >= 0 && t > 0.3 + order * 0.9 + (order === 0 ? i * 0.12 : (i - 5) * 0.12);
-      m.color.set(lit ? "#e0453a" : s.t.inPattern ? "#8f3a33" : "#7d7466");
-      m.emissive.set(lit ? "#e0453a" : "#000000");
-      m.emissiveIntensity = lit ? 0.6 : 0;
-    });
+    const k = active ? THREE.MathUtils.smoothstep(t, 0.5, 1.7) : 0;
+    const v = 0.977 + (0.825 - 0.977) * k;
+    if (safety.current) safety.current.rotation.z = THREE.MathUtils.damp(safety.current.rotation.z, dialAngle(v), 10, dt);
+    if (recall.current) recall.current.rotation.z = dialAngle(1) + (active && t < 1.7 ? Math.sin(t * 18) * 0.015 : 0);
+    const m = lamp.current;
+    if (m) {
+      const red = active && t > 1.8;
+      m.color.set(red ? "#d8412f" : "#7d828b");
+      m.emissive.set(red ? "#ff3b24" : part === "gate" ? "#3d6bff" : "#000000");
+      m.emissiveIntensity = red ? 1.4 : part === "gate" ? 0.6 : 0;
+    }
   });
+  // Face is 0.56 × 0.28; dial centres from the texture layout.
+  const W = 0.56;
+  const H = 0.28;
+  const u = (px: number) => (px / 768 - 0.5) * W;
+  const v = (py: number) => (0.5 - py / 384) * H;
+  const ring = (cx: number, id: string) =>
+    part === id ? (
+      <mesh position={[u(cx), v(190), 0.004]}>
+        <ringGeometry args={[0.088, 0.096, 48]} />
+        <meshBasicMaterial color={ACCENT} toneMapped={false} />
+      </mesh>
+    ) : null;
+  const needle = (ref: React.RefObject<THREE.Group | null>, cx: number) => (
+    <group ref={ref} position={[u(cx), v(190), 0.008]}>
+      <mesh position-y={0.032}>
+        <boxGeometry args={[0.006, 0.066, 0.004]} />
+        <meshStandardMaterial color="#1d2026" roughness={0.4} />
+      </mesh>
+      <mesh rotation-x={Math.PI / 2}>
+        <cylinderGeometry args={[0.009, 0.009, 0.008, 16]} />
+        <meshStandardMaterial color="#1d2026" metalness={0.5} roughness={0.4} />
+      </mesh>
+    </group>
+  );
   return (
     <group>
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[W + 0.06, H + 0.06, 0.04]} />
-        <meshStandardMaterial color="#5a3c24" roughness={0.7} />
-      </mesh>
-      <mesh position-z={0.021} receiveShadow>
-        <planeGeometry args={[W, H]} />
-        <meshStandardMaterial map={cork} roughness={0.95} />
-      </mesh>
-      {strings.map((s, i) => {
-        const mid = s.a.clone().add(s.b).multiplyScalar(0.5);
-        const len = s.a.distanceTo(s.b);
-        const angle = Math.atan2(s.b.y - s.a.y, s.b.x - s.a.x);
-        return (
-          <mesh key={s.t.id} position={[mid.x, mid.y, 0.045]} rotation-z={angle - Math.PI / 2}>
-            <cylinderGeometry args={[0.0028, 0.0028, len, 6]} />
-            <meshStandardMaterial ref={(m) => { mats.current[i] = m; }} color="#7d7466" roughness={0.6} />
+      <group position={[0, 0.17, -0.02]} rotation-x={-0.32}>
+        <mesh geometry={body} castShadow receiveShadow>
+          <meshStandardMaterial color="#2a2d34" metalness={0.3} roughness={0.5} />
+        </mesh>
+        <group position-z={0.131}>
+          <mesh>
+            <planeGeometry args={[W, H]} />
+            <meshStandardMaterial map={face} roughness={0.7} />
           </mesh>
-        );
-      })}
-      {cards.map((c) => (
-        <group key={c.id} position={[c.pos.x, c.pos.y, 0.035]}>
-          <mesh castShadow>
-            <planeGeometry args={[0.12, 0.075]} />
-            <meshStandardMaterial map={c.tex} roughness={0.85} />
-          </mesh>
-          <mesh position={[0, 0.03, 0.012]}>
-            <sphereGeometry args={[0.009, 12, 12]} />
-            <meshStandardMaterial color="#c0392b" roughness={0.3} />
+          {ring(150, "recall")}
+          {ring(430, "safety")}
+          {needle(recall, 150)}
+          {needle(safety, 430)}
+          <mesh position={[u(650), v(190), 0.012]}>
+            <sphereGeometry args={[0.026, 24, 24]} />
+            <meshStandardMaterial ref={lamp} color="#7d828b" roughness={0.3} />
           </mesh>
         </group>
-      ))}
+      </group>
+      {/* Strip-chart roll on top */}
+      <mesh position={[0.17, 0.36, -0.12]} rotation-z={Math.PI / 2} castShadow>
+        <cylinderGeometry args={[0.03, 0.03, 0.2, 24]} />
+        <meshStandardMaterial color="#e9e5da" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.17, 0.3, -0.07]} rotation-x={-1.1}>
+        <planeGeometry args={[0.18, 0.1]} />
+        <meshStandardMaterial color="#fbfaf6" roughness={0.9} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, 0.012, 0.02]} receiveShadow>
+        <boxGeometry args={[0.66, 0.024, 0.34]} />
+        <meshStandardMaterial color="#1f2126" roughness={0.6} />
+      </mesh>
+    </group>
+  );
+}
+
+/** OSINT: an open dossier, a card file of excerpts, and a magnifier that travels from a citation to its excerpt. */
+function OsintDossier({ active, runKey, part }: { active: boolean; runKey: number; part: string | null }) {
+  const pages = useMemo(() => dossierTexture(), []);
+  const lens = useRef<THREE.Group>(null);
+  const start = useRef(0);
+  useEffect(() => {
+    start.current = performance.now() / 1000;
+  }, [runKey, active]);
+  const from = useMemo(() => new THREE.Vector3(-0.06, 0.06, 0.04), []);
+  const to = useMemo(() => new THREE.Vector3(0.14, 0.06, -0.06), []);
+  useFrame(() => {
+    const g = lens.current;
+    if (!g) return;
+    const t = performance.now() / 1000 - start.current;
+    const k = active ? THREE.MathUtils.smootherstep(t, 0.4, 1.6) : 0;
+    g.position.lerpVectors(from, to, k);
+    g.position.y = 0.06 + Math.sin(Math.PI * k) * 0.06;
+  });
+  const hl = (id: string) => (part === id ? ACCENT : new THREE.Color("#000000"));
+  return (
+    <group rotation-y={-0.06}>
+      {/* Folder */}
+      <mesh position={[0, 0.006, 0.02]} rotation-x={-Math.PI / 2} receiveShadow castShadow>
+        <planeGeometry args={[0.66, 0.44]} />
+        <meshStandardMaterial color="#c8a76a" roughness={0.85} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, 0.012, 0.02]} rotation-x={-Math.PI / 2} receiveShadow>
+        <planeGeometry args={[0.6, 0.375]} />
+        <meshStandardMaterial map={pages} roughness={0.9} emissive={hl("report")} emissiveIntensity={0.25} />
+      </mesh>
+      {/* Card file of excerpts */}
+      <group position={[0.24, 0, -0.27]}>
+        <mesh position-y={0.04} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 0.08, 0.12]} />
+          <meshStandardMaterial color="#3a3f48" roughness={0.5} />
+        </mesh>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <mesh key={i} position={[0, 0.1, -0.04 + i * 0.02]} rotation-x={-0.12} castShadow>
+            <boxGeometry args={[0.16, 0.08, 0.003]} />
+            <meshStandardMaterial color={i === 1 ? "#dfe7ff" : "#fbfaf6"} emissive={hl("excerpts")} emissiveIntensity={0.3} roughness={0.9} />
+          </mesh>
+        ))}
+      </group>
+      {/* Magnifier */}
+      <group ref={lens} position={from.toArray()}>
+        <mesh rotation-x={-Math.PI / 2}>
+          <torusGeometry args={[0.065, 0.011, 12, 40]} />
+          <meshStandardMaterial color={part === "lens" ? "#3d6bff" : "#1d2026"} metalness={0.6} roughness={0.3} />
+        </mesh>
+        <mesh rotation-x={-Math.PI / 2}>
+          <circleGeometry args={[0.062, 40]} />
+          <meshStandardMaterial color="#dfe8ff" transparent opacity={0.28} roughness={0.05} metalness={0.1} />
+        </mesh>
+        <mesh position={[0.1, -0.01, 0.06]} rotation={[Math.PI / 2, 0, -1.0]} castShadow>
+          <cylinderGeometry args={[0.012, 0.014, 0.12, 12]} />
+          <meshStandardMaterial color="#1d2026" roughness={0.5} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -548,7 +591,7 @@ function CameraRig({ selected, labelRefs }: { selected: ProjectSlug | null; labe
   const v = useMemo(() => new THREE.Vector3(), []);
   useFrame((state, dt) => {
     const { camera, size, pointer } = state;
-    const goal = selected ? FOCUS[selected] : OVERVIEW;
+    const goal = selected ? focusFor(selected) : OVERVIEW;
     // Gentle parallax with the pointer adds depth without free orbiting.
     const px = selected ? 0.06 : 0.28;
     const goalPos = v.copy(goal.pos).add(new THREE.Vector3(pointer.x * px, pointer.y * px * 0.5, 0));
@@ -561,10 +604,10 @@ function CameraRig({ selected, labelRefs }: { selected: ProjectSlug | null; labe
     // Project label anchors to screen space and position the DOM labels.
     const refs = labelRefs.current;
     if (!refs) return;
-    (Object.keys(LABEL_ANCHOR) as ProjectSlug[]).forEach((slug) => {
+    BENCH_ORDER.forEach((slug) => {
       const el = refs[slug];
       if (!el) return;
-      const p = LABEL_ANCHOR[slug].clone().project(camera);
+      const p = LABEL_ANCHOR(slug).project(camera);
       const x = (p.x * 0.5 + 0.5) * size.width;
       const y = (-p.y * 0.5 + 0.5) * size.height;
       const show = p.z < 1 && (!selected || selected === slug);
@@ -602,8 +645,8 @@ export default function Scene3D(props: SceneProps) {
     return () => io.disconnect();
   }, []);
 
-  const plinth = (slug: ProjectSlug, children: React.ReactNode, radius?: number) => (
-    <group position={POS[slug]}>
+  const plinth = (slug: ProjectSlug, children: React.ReactNode, radius = 0.42) => (
+    <group position={POS(slug)}>
       <Plinth slug={slug} selected={selected === slug} hovered={hovered === slug} onSelect={onSelect} onHover={onHover} radius={radius}>
         {children}
       </Plinth>
@@ -623,20 +666,35 @@ export default function Scene3D(props: SceneProps) {
       >
         <color attach="background" args={[dark ? "#1b1d22" : "#e8e6e1"]} />
         <fog attach="fog" args={[dark ? "#1b1d22" : "#e8e6e1", 6, 12]} />
-        <hemisphereLight args={[dark ? "#b9c4ff" : "#ffffff", dark ? "#2a1d14" : "#b6a48f", dark ? 0.55 : 1.15]} />
-        <directionalLight position={[3, 4, 3]} intensity={dark ? 0.35 : 0.9} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} shadow-camera-left={-3} shadow-camera-right={3} shadow-camera-top={2} shadow-camera-bottom={-2} />
-        {/* Cool fill on the right so the board and Baseline read at night */}
-        <pointLight position={[1.3, 1.9, 0.9]} intensity={dark ? 9 : 2} distance={5} decay={1.5} color={dark ? "#a9bcff" : "#ffffff"} />
+        <hemisphereLight args={[dark ? "#b9c4ff" : "#ffffff", dark ? "#2a1d14" : "#b6a48f", dark ? 0.6 : 1.05]} />
+        {/* Key light from above and in front, matching the light bar; the only shadow caster. */}
+        <directionalLight
+          position={[0.6, 4.2, 2.6]}
+          intensity={dark ? 0.55 : 1.0}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={1024}
+          shadow-camera-left={-2.8}
+          shadow-camera-right={2.8}
+          shadow-camera-top={1.6}
+          shadow-camera-bottom={-1.6}
+          shadow-bias={-0.0004}
+        />
         <Room dark={dark} />
-        <Lamp dark={dark} />
-        {plinth("signlink", <SignLinkExhibit active={selected === "signlink"} runKey={motionKey} />, 0.5)}
-        {plinth("visionary", <group scale={1.3}><VisionaryExhibit part={selected === "visionary" ? part : null} onPart={(p) => { onSelect("visionary"); onPart(p); }} /></group>, 0.5)}
-        {plinth("baseline", <BaselineExhibit active={selected === "baseline"} runKey={motionKey} />, 0.5)}
-        <group position={POS.guardian}>
-          <Plinth slug="guardian" selected={selected === "guardian"} hovered={hovered === "guardian"} onSelect={onSelect} onHover={onHover} radius={0.001}>
-            <GuardianExhibit active={selected === "guardian"} runKey={motionKey} />
-          </Plinth>
-        </group>
+        <BenchLights dark={dark} selected={selected} />
+        {BENCH_ORDER.map((slug, i) => (
+          <Placard key={slug} slug={slug} index={i} dark={dark} />
+        ))}
+        {plinth("baseline", <BaselineTerminal active={selected === "baseline"} runKey={motionKey} />)}
+        {plinth("bellwether", <BellwetherInstrument active={selected === "bellwether"} runKey={motionKey} part={selected === "bellwether" ? part : null} />)}
+        {plinth("osint", <OsintDossier active={selected === "osint"} runKey={motionKey} part={selected === "osint" ? part : null} />)}
+        {plinth("signlink", <group scale={0.74} position-x={-0.12}><SignLinkExhibit active={selected === "signlink"} runKey={motionKey} /></group>)}
+        {plinth(
+          "visionary",
+          <group scale={1.08} position-x={-0.12}>
+            <VisionaryExhibit part={selected === "visionary" ? part : null} onPart={(p) => { onSelect("visionary"); onPart(p); }} />
+          </group>,
+        )}
         <CameraRig selected={selected} labelRefs={labelRefs} />
         <Ready onReady={onReady} />
       </Canvas>

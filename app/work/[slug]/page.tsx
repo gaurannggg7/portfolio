@@ -12,7 +12,9 @@ import NotesIntro from "@/components/modes/notes/NotesIntro";
 
 const KICKER: Record<ProjectSlug, string> = {
   signlink: "Accessibility AI · speech to sign",
-  baseline: "LLM systems · multi-agent pipeline",
+  baseline: "LLM systems · financial-analysis pipeline",
+  bellwether: "LLM evaluation · regression gate",
+  osint: "Retrieval · cited synthesis",
   guardian: "Graph ML · fraud detection",
   visionary: "Embedded systems · wearable",
 };

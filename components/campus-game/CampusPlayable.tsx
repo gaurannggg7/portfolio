@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { ArrowUpRight, LogOut, Settings2, Volume2, VolumeX } from "lucide-react";
-import { site } from "@/content/site";
+import { resume } from "@/content/site";
 
 // The game (engine, sprites, renderer) is its own chunk, loaded only when played.
 const CampusGame = dynamic(() => import("./CampusGame"), { ssr: false });
@@ -76,11 +76,11 @@ export default function CampusPlayable({ staticMap }: { staticMap: React.ReactNo
           <span className="sm:hidden">Projects</span>
           <span className="hidden sm:inline">All projects</span>
         </a>
-        <a href={site.resume} target="_blank" rel="noopener" className={tool}>
+        <a href={resume.pdf} target="_blank" rel="noopener" className={tool}>
           Résumé <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
         </a>
         <Link href="/?view=lab" className={tool}>
-          <LogOut aria-hidden className="h-3.5 w-3.5" /> Exit<span className="hidden sm:inline">&nbsp;campus</span>
+          <LogOut aria-hidden className="h-3.5 w-3.5" /> Exit<span className="hidden sm:inline">campus</span>
         </Link>
         <button
           ref={settingsBtn}

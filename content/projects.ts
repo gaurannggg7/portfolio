@@ -7,7 +7,7 @@ export const signlink: Project = {
   slug: "signlink",
   name: "SignLink",
   summary: "Spoken or typed English in, a sequence of American Sign Language clips out.",
-  period: "2025 – 2026",
+  period: "May 2025 – Jun 2026",
   role: "Developer · speech-to-sign pipeline",
   outcome:
     "Turns spoken or typed English into a sequence of ASL sign clips, with a fallback chain so no word is silently dropped.",
@@ -136,9 +136,9 @@ export const signlink: Project = {
     },
   ],
   links: [
+    { label: "Open app", href: "https://huggingface.co/spaces/gaurannggg7/Signlink", kind: "live", note: "Hugging Face Space, may take a minute to wake" },
     { label: "Repository", href: SIGNLINK_REPO, kind: "repo" },
-    { label: "Live app", href: "https://huggingface.co/spaces/gaurannggg7/Signlink", kind: "live", note: "Hugging Face Space, may take a minute to wake" },
-    { label: "Recorded demo", href: "https://youtu.be/33DwsluZMfA", kind: "video", note: "earlier offline build, YouTube" },
+    { label: "Watch demo", href: "https://youtu.be/33DwsluZMfA", kind: "video", note: "earlier offline build, YouTube" },
     { label: "Sign dataset", href: "https://huggingface.co/datasets/gaurannggg7/asl-dictionary", kind: "dataset" },
   ],
   provenance: {
@@ -216,16 +216,16 @@ export const visionary: Project = {
   name: "Visionary Hands",
   summary: "A glove that reads fingerspelled ASL letters and turns them into text.",
   period: "Jan 2024 – Dec 2025",
-  role: "Team lead · EPICS at ASU · team of 7",
+  role: "Project team lead · EPICS at ASU",
   outcome:
     "A sensor glove that matches finger bend and hand motion to fingerspelled letters and assembles them into words.",
   problem:
     "Most people who don't sign can't read fingerspelling. Visionary Hands measures how each finger bends, plus hand motion, matches that to a letter, and builds words out of the letters.",
   contribution: [
-    "Led a team of seven through design and testing.",
-    "Integrated the flex sensors, the MPU6050 accelerometer/gyroscope, and the microcontroller.",
+    "Led the interdisciplinary team through design and testing, including a usability test with 10 people.",
+    "Integrated the flex sensors, the MPU6050 accelerometer/gyroscope, and the ESP32 microcontroller.",
     "Wrote the letter-matching logic in Java (Strain.java) and C++ (firmware), and documented how sensor readings become letters.",
-    "Pitched at the EPICS Elite Pitch competition, which awarded the team $1,000.",
+    "Pitched at the EPICS Elite Pitch competition, where the team placed third ($1,000).",
   ],
   howItWorks:
     "Five flex sensors give one bend value per finger. After calibration, each value is scaled to 0–100 and the reading is compared with a hand-tuned template for every letter. The closest template wins. Motion from the MPU6050 separates the moving letters J and Z from the still letters I and D. A letter only counts after five matching readings in a row, and letters are buffered into words.",
@@ -247,7 +247,7 @@ export const visionary: Project = {
       process:
         "While calibrating, it records each finger's minimum and maximum. After that, each reading is shifted by the minimum and scaled to 0–100 using that finger's range.",
       output: "Five calibrated values from 0 to 100.",
-      tech: ["C++ (Arduino framework)"],
+      tech: ["C++ (Arduino framework on ESP32)"],
       limitation:
         "In the latest committed sketch, the check that ends calibration is disabled (`&& false`), so the device keeps calibrating.",
       source: { label: "SensorReading.cpp", href: `${VH_REPO}/blob/main/combined_code/SensorReading.cpp` },
@@ -303,7 +303,7 @@ export const visionary: Project = {
       "Values are ones you set with the sliders, not sensor data, and the five-reading stability check is skipped.",
     ],
   },
-  stack: ["C++", "Arduino framework", "Java", "MPU6050", "Flex sensors", "Python (data extraction)"],
+  stack: ["C++", "ESP32", "Arduino framework", "Java", "MPU6050", "Flex sensors"],
 };
 
 const BL_REPO = "https://github.com/gaurannggg7/cpg-cfo-agent";
@@ -324,6 +324,7 @@ export const baseline: Project = {
     "Wrote a 29-case adversarial CSV corpus and used it to take the structured-error pass rate from 62% to 100%, removing all 10 unhandled crashes.",
     "Moved category totals and runway arithmetic out of the model into pandas and Python after measuring that the model's figures varied between identical runs.",
     "Restructured the graph into a parallel fan-out/fan-in and documented why the end-to-end gain is capped.",
+    "Exposed the pipeline as three FastMCP tools (full brief, categorization, runway) over stdio for Claude Desktop.",
   ],
   howItWorks:
     "A CSV is validated in the backend first, then three nodes run in parallel: an LLM buckets spend into categories, an LLM flags anomalies with a risk level, and Python computes runway. A final LLM node writes the brief from all three. Totals come from pandas, not the model.",
@@ -346,7 +347,7 @@ export const baseline: Project = {
       input: "Validated transactions.",
       process: "An LLM call in JSON mode buckets each transaction into COGS, OpEx, S&M, R&D, or Other, using a pinned item schema.",
       output: "Transactions grouped by category. The category totals are summed in pandas, not by the model.",
-      tech: ["LangGraph node", "Groq (gpt-oss-120b; earlier Llama 3.3 70B)"],
+      tech: ["LangGraph node", "Groq · openai/gpt-oss-120b (configured now)", "llama-3.3-70b-versatile (when evaluated)"],
       rationale:
         "Model-produced totals disagreed with the real sum by more than 5% in 16 of 19 runs, so totals are now computed in pandas (from eval/RESULTS.md).",
       source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` },
@@ -413,31 +414,31 @@ export const baseline: Project = {
   ],
   limitations: [
     "Measured median latency was about 14 seconds. Only 1 of 18 evaluated runs finished in under 3 seconds.",
-    "The evaluation was run on Llama 3.3 70B, which has since been retired. The model-specific numbers haven't been re-measured on gpt-oss-120b.",
+    "Every measurement in the evaluation was taken on llama-3.3-70b-versatile, which Groq has since shut down. The code now runs openai/gpt-oss-120b, and the model-specific numbers haven't been re-measured on it.",
     "Two Grafana panels (per-agent time, token usage) are defined but never populated, and the Kubernetes manifests have never been applied to a live cluster.",
   ],
   results: [
     {
       value: "62% → 100%",
       context:
-        "Structured-error pass rate on a 29-file adversarial CSV corpus (27 evaluated; 2 not run because of API quota). Unhandled crashes went from 10 to 0. This doesn't depend on the model.",
+        "Structured-error pass rate on a 29-file adversarial CSV corpus (27 evaluated; 2 not run because of API quota). Unhandled crashes went from 10 to 0. Model-independent: validation runs before any LLM call, and it was re-verified after the switch to gpt-oss-120b.",
     },
     {
       value: "Deterministic figures",
       context:
-        "Category totals and runway gave 1 distinct value across 7 identical runs, down from 22 in 22 before. They're computed in code now; the summary text still varies.",
+        "Category totals and runway gave 1 distinct value across 7 identical runs, down from 22 in 22 before. Measured on llama-3.3-70b-versatile. The figures are now computed in code, so they don't come from the model, but the report hasn't re-run this check on gpt-oss-120b. The summary text still varies.",
     },
     {
       value: "70% recall",
       context:
-        "On one planted −$85,000 outlier over 10 runs, measured on the retired Llama 3.3 model. Precision was 88% or 70% depending on the scoring rule.",
+        "On one planted −$85,000 outlier over 10 runs, measured on llama-3.3-70b-versatile. Precision was 88% or 70% depending on the scoring rule. Not re-measured on gpt-oss-120b.",
     },
   ],
   links: [
-    { label: "Live demo", href: "https://cpg-cfo-agent.vercel.app", kind: "live", note: "Try Demo → Try Sample Data; backend may take 30–60s to wake" },
+    { label: "Open app", href: "https://cpg-cfo-agent.vercel.app", kind: "live", note: "Try Demo → Try Sample Data; backend may take 30–60s to wake" },
     { label: "Repository", href: BL_REPO, kind: "repo", note: "named cpg-cfo-agent, the original working title" },
-    { label: "Evaluation report", href: `${BL_REPO}/blob/main/eval/RESULTS.md`, kind: "repo" },
-    { label: "Architecture notes", href: `${BL_REPO}/blob/main/ARCHITECTURE.md`, kind: "repo" },
+    { label: "Evaluation report", href: `${BL_REPO}/blob/main/eval/RESULTS.md`, kind: "doc" },
+    { label: "Architecture notes", href: `${BL_REPO}/blob/main/ARCHITECTURE.md`, kind: "doc" },
   ],
   provenance: {
     summary: "Where these numbers come from",
@@ -447,27 +448,352 @@ export const baseline: Project = {
       "Nothing on this page calls the live API.",
     ],
   },
-  stack: ["Python", "LangGraph", "FastAPI", "Groq", "pandas", "Next.js", "Firebase", "Docker"],
+  model: {
+    current: "openai/gpt-oss-120b on Groq",
+    evaluated: "llama-3.3-70b-versatile on Groq (temperature 0, seed 42)",
+    note: "Groq shut the Llama model down on 2026-08-16. The parse-layer and pipeline fixes hold on either model; latency, anomaly recall, and text-variation numbers are Llama-only.",
+  },
+  evidence: [
+    { kind: "measured", claim: "Structured-error pass rate 62% → 100% on a 29-file adversarial CSV corpus (27 run).", source: { label: "eval/RESULTS.md", href: `${BL_REPO}/blob/main/eval/RESULTS.md` } },
+    { kind: "measured", claim: "Median latency about 14 s; 70% anomaly recall on one planted outlier. Both measured on llama-3.3-70b-versatile, before the switch to gpt-oss-120b.", source: { label: "eval/RESULTS.md", href: `${BL_REPO}/blob/main/eval/RESULTS.md` } },
+    { kind: "implemented", claim: "Totals in pandas and runway in plain Python, outside the model.", source: { label: "backend/agent.py", href: `${BL_REPO}/blob/main/backend/agent.py` } },
+    { kind: "implemented", claim: "Three FastMCP tools over stdio.", source: { label: "services/mcp/server.py", href: `${BL_REPO}/blob/main/services/mcp/server.py` } },
+    { kind: "implemented", claim: "gRPC gateway, Kafka, Prometheus, and Grafana run in local Docker Compose only; the Kubernetes manifests have never been applied.", source: { label: "docker-compose.yml", href: `${BL_REPO}/blob/main/docker-compose.yml` } },
+    { kind: "not-measured", claim: "Model-specific numbers on the current gpt-oss-120b model." },
+  ],
+  stack: ["Python", "LangGraph", "FastAPI", "Groq", "FastMCP", "pandas", "Next.js", "Firebase", "Docker"],
 };
 
-export const featured: Record<ProjectSlug, Project> = { signlink, baseline, guardian, visionary };
+const BW_REPO = "https://github.com/gaurannggg7/AI-Evaluation-Observability-Framework-for-Clinical-AI-Companions";
+const BW_APP = "https://bellwether-eval.vercel.app";
 
-/** Display order used by every view. */
-export const PROJECT_ORDER: ProjectSlug[] = ["signlink", "baseline", "guardian", "visionary"];
+export const bellwether: Project = {
+  slug: "bellwether",
+  name: "Bellwether",
+  summary: "An independent evaluation and regression-testing prototype for AI companions, built on synthetic scenarios.",
+  outcome:
+    "An independent evaluation and regression-testing prototype for AI companions, run on 60 synthetic scenarios. In its prompt comparison, urgent routing recall held at 1.0 while response quality fell, and the deployment gate blocked the change.",
+  period: "Aug 2026",
+  role: "Sole developer",
+  problem:
+    "When an AI companion's prompt or model changes, a single headline metric can stay flat while the replies themselves get worse. Bellwether scores every response on seven dimensions, compares prompt versions scenario by scenario, and fails a deployment gate when a blocking metric regresses. Every scenario is synthetic and every published run is a deterministic mock run: the results test the harness, not the clinical safety of any system.",
+  contribution: [
+    "Wrote 60 synthetic scenarios with reference labels and expected actions, and kept those labels out of both the generator's and the evaluator's context.",
+    "Built two independent risk readings (a deterministic rules layer and a model classifier) and a rubric evaluator that scores seven dimensions, three of them hard gates.",
+    "Wrote a deterministic router whose rules can only raise an action, and records every rule it applied.",
+    "Built prompt-version comparison and a regression gate that exits non-zero, plus a Next.js dashboard that reads a committed snapshot of the results.",
+  ],
+  howItWorks:
+    "Each synthetic scenario goes through a context builder that decides what the generator and the evaluator may see. A rules layer and a classifier read the conversation independently and are fused. The generator writes a reply; a separate evaluator scores it on seven dimensions; a deterministic router decides the simulated action. Two runs with different prompt versions are then compared metric by metric, and any regression in a blocking metric fails the gate.",
+  stages: [
+    {
+      id: "scenarios",
+      label: "Synthetic scenarios",
+      short: "Scenarios",
+      brief: "60 synthetic conversations, each with a reference label and expected action.",
+      input: "Hand-written scenario files: patient context, treatment goal, approved coping strategy, conversation, user message.",
+      process: "Each scenario carries a reference label (ideation severity, behaviour, risk context) and an expected simulated action, used only for scoring afterwards.",
+      output: "Dataset version 1.1.0, 60 scenarios.",
+      tech: ["Python", "JSON"],
+      limitation: "All scenarios and labels were written by one author for engineering evaluation. None are clinical data, and none are clinically validated.",
+      source: { label: "data/schema.md", href: `${BW_REPO}/blob/main/data/schema.md` },
+    },
+    {
+      id: "context",
+      label: "Context builder",
+      short: "Context",
+      brief: "Decides what the generator and evaluator may see. Neither sees the reference label.",
+      input: "One scenario.",
+      process: "Builds two different views deterministically. The generator gets the context it would plausibly have at inference time. The evaluator gets the same context plus the rubric and the candidate reply. Neither gets the reference label or the expected action.",
+      output: "A generator context and an evaluator context.",
+      tech: ["Python"],
+      rationale: "If the evaluator saw the label, evaluator-vs-reference agreement would be a tautology rather than a measurement (from the module docstring).",
+      source: { label: "evaluation/context.py", href: `${BW_REPO}/blob/main/evaluation/context.py` },
+    },
+    {
+      id: "signals",
+      label: "Signal readings",
+      short: "Signals",
+      brief: "A rules layer and a classifier read the conversation separately, then are fused.",
+      input: "Generator context.",
+      process: "Deterministic phrase rules and an independent classifier each produce a concern level. Fusion keeps both readings, records whether they agree, and lowers confidence when they don't.",
+      output: "A concern level, confidence, detected signals, and reason codes.",
+      tech: ["Python", "Groq (live mode)", "mock classifier (offline)"],
+      rationale: "The rules layer exists to be predictable, especially on benign language a model may over-read (from the module docstring).",
+      source: { label: "evaluation/safety.py", href: `${BW_REPO}/blob/main/evaluation/safety.py` },
+    },
+    {
+      id: "generate",
+      label: "Generation",
+      short: "Generate",
+      brief: "A versioned prompt produces the reply. Offline, a mock generator follows the prompt's switches.",
+      input: "Generator context and a prompt version.",
+      process: "In live mode a model is called with the versioned system prompt. In mock mode a deterministic generator applies the prompt's behavioural switches (lead with coping, when to mention the care team, whether to acknowledge a disclosure).",
+      output: "One candidate reply.",
+      tech: ["Python", "Groq (live mode)"],
+      limitation: "Every run in the published snapshot is a mock run. The comparison shows the harness catching a behavioural change; it is not a measurement of a live model.",
+      source: { label: "pipeline/prompts.py", href: `${BW_REPO}/blob/main/pipeline/prompts.py` },
+    },
+    {
+      id: "evaluate",
+      label: "Rubric evaluation",
+      short: "Evaluate",
+      brief: "Seven scored dimensions. Safety, escalation correctness, and policy adherence are hard gates.",
+      input: "Evaluator context and the candidate reply.",
+      process: "Scores seven dimensions from 0 to 1 with reason codes. A weighted aggregate is reported for trends only; a failed hard-gate dimension fails the reply whatever the aggregate says.",
+      output: "Dimension scores, reason codes, assessed concern, hard-gate result.",
+      tech: ["Python"],
+      rationale: "An average lets several good dimensions hide one unsafe one, so hard-gate failures cannot be averaged away (from evaluation/scoring.py).",
+      source: { label: "evaluation/scoring.py", href: `${BW_REPO}/blob/main/evaluation/scoring.py` },
+    },
+    {
+      id: "route",
+      label: "Deterministic router",
+      short: "Route",
+      brief: "Rules raise the simulated action and never lower it. Every rule applied is recorded.",
+      input: "Fused concern level and the evaluator's findings.",
+      process: "Maps the concern signal to a simulated action, then lets named rules raise it, for example when the reply itself failed a hard gate.",
+      output: "A simulation label such as ESCALATE_SIMULATION, with the rules that produced it.",
+      tech: ["Python"],
+      rationale: "Same inputs give the same decision, and an averaged decision could let many benign signals outvote one serious one (from the module docstring).",
+      limitation: "Outputs are labels only. The system cannot and does not contact anyone.",
+      source: { label: "models/router.py", href: `${BW_REPO}/blob/main/models/router.py` },
+    },
+    {
+      id: "gate",
+      label: "Regression gate",
+      short: "Gate",
+      brief: "Compares two runs metric by metric and exits non-zero when a blocking metric regresses.",
+      input: "Metrics from a baseline run and a candidate run.",
+      process: "Each metric has a direction, a tolerance, and a blocking flag. The comparison never knows which version is supposed to win. The CLI exits non-zero when the gate blocks, so a deployment pipeline stops.",
+      output: "Deltas, per-scenario regressions, and a pass/block decision.",
+      tech: ["Python", "SQLite"],
+      source: { label: "pipeline/regression.py", href: `${BW_REPO}/blob/main/pipeline/regression.py` },
+    },
+    {
+      id: "dashboard",
+      label: "Snapshot dashboard",
+      short: "Dashboard",
+      brief: "A static Next.js dashboard built from a committed JSON snapshot of the runs.",
+      input: "SQLite results exported to eval-dashboard/data/snapshot.json.",
+      process: "A sync script serialises the pipeline's output; the dashboard validates the snapshot at build time and is prerendered.",
+      output: "The public dashboard.",
+      tech: ["Next.js", "TypeScript", "Vercel"],
+      rationale: "Vercel can't read the pipeline's SQLite database at request time, so the deployed app reads a committed snapshot (from eval-dashboard/README.md).",
+      source: { label: "eval-dashboard/README.md", href: `${BW_REPO}/blob/main/eval-dashboard/README.md` },
+    },
+  ],
+  tradeoffs: [
+    {
+      title: "Hard gates over a single score",
+      body: "The aggregate is still computed, but only for trend-watching. Three dimensions are hard gates, so a reply that skips a disclosure fails even when warmth and relevance are perfect.",
+    },
+    {
+      title: "Mock runs first",
+      body: "Deterministic mock runs make every delta real rather than noise, which is what a gate needs to be tested. The price is that the published comparison says nothing about how a live model behaves.",
+    },
+  ],
+  limitations: [
+    "All 60 scenarios are synthetic and author-labelled. Nothing is clinically validated.",
+    "The published runs are deterministic mock runs. No live-model safety has been measured.",
+    "The evaluator's agreement with the reference labels (0.8) is measured on this synthetic set only.",
+  ],
+  results: [
+    {
+      value: "Gate blocked",
+      context: "prompt_v1 → prompt_v2 on 60 synthetic scenarios, mock runs. Safety, escalation correctness, and hard-gate failure rate regressed; all three are blocking.",
+    },
+    {
+      value: "1.0 → 1.0",
+      context: "Urgent recall was unchanged, and every one of the 60 routing decisions was identical in both runs. Hard-gate failures still went from 8 to 16.",
+    },
+  ],
+  evidence: [
+    { kind: "implemented", claim: "Reference labels are excluded from generator and evaluator context, with tests for both.", source: { label: "tests/test_safety_and_context.py", href: `${BW_REPO}/blob/main/tests/test_safety_and_context.py` } },
+    { kind: "implemented", claim: "Hard-gate dimensions fail a reply regardless of the aggregate score.", source: { label: "evaluation/scoring.py", href: `${BW_REPO}/blob/main/evaluation/scoring.py` } },
+    { kind: "implemented", claim: "Router rules only raise the action and record their names.", source: { label: "models/router.py", href: `${BW_REPO}/blob/main/models/router.py` } },
+    { kind: "implemented", claim: "The regression CLI exits non-zero when the gate blocks.", source: { label: "tests/regression_tests.py", href: `${BW_REPO}/blob/main/tests/regression_tests.py` } },
+    { kind: "measured", claim: "prompt_v2 regressed three blocking metrics while urgent recall stayed at 1.0 (mock runs, 60 synthetic scenarios).", source: { label: "eval-dashboard/data/snapshot.json", href: `${BW_REPO}/blob/main/eval-dashboard/data/snapshot.json` } },
+    { kind: "not-measured", claim: "Behaviour of a live model, clinical validity, or real-world safety." },
+  ],
+  links: [
+    { label: "Open app", href: BW_APP, kind: "live", note: "static dashboard built from the committed snapshot" },
+    { label: "Repository", href: BW_REPO, kind: "repo" },
+    { label: "Methodology", href: `${BW_REPO}/blob/main/docs/methodology.md`, kind: "doc" },
+  ],
+  provenance: {
+    summary: "Where the exhibit's data comes from",
+    points: [
+      "Copied from the repository's committed eval-dashboard/data/snapshot.json (generated 2026-08-26). Nothing on this page reruns the Python pipeline.",
+      "Both runs are deterministic mock runs (mock-generator-v1, mock-rubric-evaluator-v1) over 60 synthetic scenarios.",
+      "Scores are engineering measurements of a test harness, not clinical judgements.",
+    ],
+  },
+  stack: ["Python", "SQLite", "pytest", "Groq", "Next.js", "TypeScript"],
+};
 
+const OS_REPO = "https://github.com/gaurannggg7/osint-synthesis-engine";
+
+export const osint: Project = {
+  slug: "osint",
+  name: "Agentic OSINT Analyst",
+  short: "OSINT Analyst",
+  summary: "Retrieval and cited synthesis over public sanctions, securities, and court records.",
+  outcome:
+    "A two-step LangGraph workflow that retrieves public-record excerpts and writes a report citing them, with every excerpt shown so the reader can check the work.",
+  period: "2026",
+  role: "Sole developer",
+  problem:
+    "Compliance research means reading many public filings to describe a kind of entity, such as an exchange with past AML actions. The analyst retrieves relevant excerpts from OFAC, SEC EDGAR, and CourtListener records and drafts a report that cites them, so a reader can check each claim against its source.",
+  contribution: [
+    "Built ingestion for OFAC SDN, SEC EDGAR, and CourtListener records and a local Chroma index with MiniLM embeddings.",
+    "Built the two-node LangGraph workflow (retrieve, then synthesize) with a guardrail that runs before any retrieval or model call.",
+    "Built the FastAPI service with structured errors, rate limiting, and a clearly labelled prerecorded mode for the public demo.",
+    "Wrote a 17-query retrieval evaluation comparing vector, BM25, and hybrid retrieval, and documented where its labels are incomplete.",
+  ],
+  howItWorks:
+    "The query is checked by a keyword guardrail, then the retrieve node pulls the top five excerpts from the Chroma index. The synthesize node sends those excerpts to a hosted model and asks for a report in which each claim cites an excerpt number. The report is parsed afterwards: only excerpts the report actually cites are returned as citations, and every retrieved excerpt is returned as a source, flagged cited or not.",
+  stages: [
+    {
+      id: "ingest",
+      label: "Ingestion",
+      short: "Ingest",
+      brief: "OFAC SDN, SEC EDGAR, and CourtListener records, cleaned and de-duplicated.",
+      input: "Public records from three sources.",
+      process: "Fetches and normalises records, strips boilerplate, and splits documents into 500-character chunks with 50 characters of overlap.",
+      output: "A corpus snapshot: 2,339 documents in the 2026-09 evaluation snapshot.",
+      tech: ["Python", "SEC EDGAR API", "CourtListener API"],
+      limitation: "A cleaning bug removed type lines from many OFAC records. It is fixed in code, but the evaluation numbers were measured before the fix.",
+      source: { label: "ingestion/sec_edgar.py", href: `${OS_REPO}/blob/main/ingestion/sec_edgar.py` },
+    },
+    {
+      id: "index",
+      label: "Vector index",
+      short: "Index",
+      brief: "MiniLM embeddings in a local Chroma store.",
+      input: "Chunks.",
+      process: "Embeds chunks with all-MiniLM-L6-v2 and persists them in Chroma. A missing or empty index raises an error instead of silently returning nothing.",
+      output: "8,036 vectors in the evaluation snapshot.",
+      tech: ["ChromaDB", "sentence-transformers"],
+      source: { label: "vectorstore/build_index.py", href: `${OS_REPO}/blob/main/vectorstore/build_index.py` },
+    },
+    {
+      id: "retrieve",
+      label: "Retrieve node",
+      short: "Retrieve",
+      brief: "Guardrail first, then the top five excerpts from the index.",
+      input: "An entity-category description (not a person).",
+      process: "Runs a keyword guardrail that rejects attempts to identify a specific person, checks credentials, then retrieves the top five chunks.",
+      output: "Five excerpts with source, title, and URL.",
+      tech: ["LangGraph", "Chroma"],
+      limitation: "The guardrail is a keyword filter, a first line of defence rather than a classifier.",
+      source: { label: "agent/graph.py", href: `${OS_REPO}/blob/main/agent/graph.py` },
+    },
+    {
+      id: "synthesize",
+      label: "Synthesize node",
+      short: "Synthesize",
+      brief: "A hosted model writes a report citing excerpt numbers; citations are parsed back out.",
+      input: "The excerpts and the query.",
+      process: "Sends a prompt that numbers each excerpt and asks for a cited report. Afterwards it parses the [n] markers, keeps only excerpts actually cited as citations, and flags every source cited or not.",
+      output: "Report, citations, sources, token usage.",
+      tech: ["Groq (openai/gpt-oss-120b)", "LangGraph"],
+      limitation: "Citation checking is structural: it confirms that a report points at an excerpt, not that the excerpt supports the claim.",
+      source: { label: "agent/graph.py", href: `${OS_REPO}/blob/main/agent/graph.py` },
+    },
+    {
+      id: "serve",
+      label: "API and demo mode",
+      short: "Serve",
+      brief: "FastAPI service; the public deployment replays saved responses and says so.",
+      input: "POST /investigate.",
+      process: "Validates input, rate-limits per client, and maps failures to explicit errors (503 when the index or model isn't configured, 502 when the model call fails). In prerecorded mode only the example queries work, and each response is labelled.",
+      output: "JSON with a mode field: live or prerecorded.",
+      tech: ["FastAPI", "Pydantic", "Next.js", "Render", "Vercel"],
+      rationale: "A failed live request returns an error rather than a saved answer, so a replay is never passed off as a live result.",
+      source: { label: "api/main.py", href: `${OS_REPO}/blob/main/api/main.py` },
+    },
+  ],
+  tradeoffs: [
+    {
+      title: "Two nodes, not an agent swarm",
+      body: "Retrieval and synthesis are the only steps, so each can be tested with an injected retriever and model, without a vector store or an API key.",
+    },
+    {
+      title: "Prerecorded public demo",
+      body: "The public deployment replays four saved runs instead of calling the model, which keeps it free to host. The cost is that only those four queries work, and the app labels them as replays.",
+    },
+  ],
+  limitations: [
+    "Retrieval was evaluated on 17 queries written by one author; differences of one or two queries are noise.",
+    "Answer groundedness, report quality, and end-to-end latency have not been measured.",
+    "Citations are structural: a cited excerpt is not proof that it supports the sentence citing it.",
+    "The corpus is small and partial, has no reranking, and can incidentally contain names of individuals.",
+  ],
+  results: [
+    {
+      value: "0.471 / 0.412 / 0.529",
+      context: "Mean recall@10 for vector, BM25, and hybrid (RRF) retrieval on 17 queries over a 2,339-document snapshot. Hybrid never beat the better single method on any query: 0 wins, 17 ties, 0 losses.",
+    },
+    {
+      value: "Labels incomplete",
+      context: "OFAC recall is near zero mostly because each query has one labelled answer among many valid ones. The numbers were measured before a cleaning fix and haven't been re-run.",
+    },
+  ],
+  evidence: [
+    { kind: "implemented", claim: "Two-node LangGraph workflow: retrieve, then synthesize.", source: { label: "agent/graph.py", href: `${OS_REPO}/blob/main/agent/graph.py` } },
+    { kind: "implemented", claim: "Only excerpts the report cites are returned as citations; all retrieved excerpts are returned as sources.", source: { label: "tests/test_graph.py", href: `${OS_REPO}/blob/main/tests/test_graph.py` } },
+    { kind: "measured", claim: "Recall@10 of 0.471 (vector), 0.412 (BM25), 0.529 (hybrid) on 17 queries.", source: { label: "eval/STAGE_5_RESULTS.md", href: `${OS_REPO}/blob/main/eval/STAGE_5_RESULTS.md` } },
+    { kind: "demonstration", claim: "The four reports in the explorer are saved outputs of real runs recorded 2026-09-18.", source: { label: "demo/prerecorded_responses.json", href: `${OS_REPO}/blob/main/demo/prerecorded_responses.json` } },
+    { kind: "not-measured", claim: "Whether report claims are supported by the excerpts they cite, report quality, and end-to-end latency." },
+  ],
+  links: [
+    { label: "Open app", href: "https://osint-synthesis-engine.vercel.app", kind: "live", note: "replays four prerecorded runs; backend may take a minute to wake" },
+    { label: "Repository", href: OS_REPO, kind: "repo" },
+    { label: "Retrieval evaluation", href: `${OS_REPO}/blob/main/eval/STAGE_5_RESULTS.md`, kind: "doc" },
+  ],
+  provenance: {
+    summary: "Where the explorer's data comes from",
+    points: [
+      "Copied from the repository's committed demo/prerecorded_responses.json: four real agent runs (retrieval plus openai/gpt-oss-120b) recorded on 2026-09-18.",
+      "They are replayed unchanged. Nothing on this page calls the backend, so the explorer works whether or not the live service is up.",
+      "Excerpts are the truncated text the agent saw. Open the original filing to read it in context.",
+    ],
+  },
+  stack: ["Python", "LangGraph", "ChromaDB", "FastAPI", "Groq", "Next.js"],
+};
+
+export const featured: Record<ProjectSlug, Project> = { baseline, bellwether, osint, signlink, visionary, guardian };
+
+/** The five projects on the desk, campus, and field notes, in display order. */
+export const FEATURED: ProjectSlug[] = ["bellwether", "osint", "baseline", "signlink", "visionary"];
+
+/** Every project with a case study, for routes and previous/next links. */
+export const PROJECT_ORDER: ProjectSlug[] = [...FEATURED, "guardian"];
+
+/** The "All projects" catalog: everything beyond the five featured projects. */
 export const moreProjects: MinorProject[] = [
   {
-    name: "Workforce productivity prediction",
-    context: "APMAC Consulting · internship",
+    name: "GuardianAI",
+    context: "Transaction-network fraud detection",
     summary:
-      "OLS regression and AutoML pipelines inside a SaaS product that estimate workforce productivity in dollars, with 95% confidence intervals, covering ingestion, feature/target selection, training, and serving.",
-    stack: ["Python", "AutoML", "OLS", "SQL", "Pandas", "scikit-learn"],
+      "PageRank centrality over an account graph feeding an XGBoost classifier, to surface structuring patterns that per-transaction checks miss. The code and data aren't public; the case study uses a synthetic example.",
+    stack: ["Python", "XGBoost", "PageRank"],
     links: [],
-    anchor: "#experience",
+    href: "/work/guardian",
+  },
+  {
+    name: "Vehicle loan default scorecard",
+    context: "Credit-risk modelling · personal project",
+    summary:
+      "Logistic regression and XGBoost on 233,154 public loan records, scaled into a 300–850 scorecard with underwriting tiers. Validation ROC-AUC was 0.600 (logistic) and 0.624 (XGBoost) on a stratified 20% split, so the models separate defaults only modestly.",
+    stack: ["Python", "scikit-learn", "XGBoost", "pandas"],
+    links: [{ label: "Repository", href: "https://github.com/gaurannggg7/vehicle-loan-default-prediction", kind: "repo" }],
+    period: "May – Jun 2026",
   },
   {
     name: "Urban food insecurity in Phoenix",
-    context: "SpaceHACK 2025 · team of 5",
+    context: "SpaceHACK 2025 · team of 5 · Honorable Mention",
     summary:
       "Layered satellite and public datasets in Google Earth Engine — Sentinel-2 NDVI, USGS land cover, the USDA Food Access Atlas, Census tracts, and NASA SMAP soil moisture — to find unused land near food-insecure neighbourhoods that could host urban agriculture.",
     stack: ["Google Earth Engine", "Colab", "NDVI", "Census data"],
@@ -477,11 +803,12 @@ export const moreProjects: MinorProject[] = [
     ],
   },
   {
-    name: "Agentic OSINT analyst",
-    context: "Personal project",
+    name: "Workforce productivity prediction",
+    context: "APMAC Consulting · client work",
     summary:
-      "A retrieval-augmented pipeline over financial filings: document ingestion, LangChain retrieval, step-by-step reasoning, then a written synthesis.",
-    stack: ["LangChain", "RAG", "Python"],
+      "Async FastAPI endpoints serving AutoML and OLS regression models behind role-based access, with 95% confidence intervals on each prediction. Client code, so there is no public repository.",
+    stack: ["Python", "FastAPI", "Pydantic", "AutoML", "OLS"],
     links: [],
+    anchor: "#experience",
   },
 ];

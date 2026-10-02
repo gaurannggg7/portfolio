@@ -1,4 +1,4 @@
-import { PROJECT_ORDER, featured } from "@/content/projects";
+import { FEATURED, featured } from "@/content/projects";
 import type { ProjectSlug } from "@/content/types";
 import { DRAW, LOCATIONS } from "./Buildings";
 
@@ -7,7 +7,7 @@ type Layout = {
   w: number;
   h: number;
   horizon: number;
-  place: Record<ProjectSlug, Placement>;
+  place: Partial<Record<ProjectSlug, Placement>>;
   paths: [number, number, number, number][];
   trees: [number, number, number][];
   lamps: [number, number][];
@@ -20,44 +20,47 @@ const WIDE: Layout = {
   h: 680,
   horizon: 236,
   place: {
-    signlink: { x: 112, y: 112, k: 1.35, door: 80, sign: { x: 262, y: 344 } },
-    guardian: { x: 868, y: 106, k: 1.35, door: 80, sign: { x: 760, y: 344 } },
+    signlink: { x: 60, y: 106, k: 1.35, door: 80, sign: { x: 196, y: 334 } },
+    bellwether: { x: 492, y: 106, k: 1.35, door: 80, sign: { x: 628, y: 334 } },
+    osint: { x: 924, y: 106, k: 1.35, door: 80, sign: { x: 834, y: 334 } },
     visionary: { x: 96, y: 392, k: 1.5, door: 51, sign: { x: 340, y: 520 } },
     baseline: { x: 858, y: 392, k: 1.5, door: 80, sign: { x: 690, y: 520 } },
   },
   paths: [
     [0, 440, 1200, 40],
     [580, 300, 40, 380],
-    [206, 312, 24, 130],
-    [966, 306, 24, 136],
+    [156, 316, 24, 126],
+    [1020, 316, 24, 126],
     [164, 478, 24, 140],
     [968, 478, 24, 140],
   ],
-  trees: [[40, 300, 1.4], [470, 250, 1.2], [700, 252, 1.1], [1130, 300, 1.4], [460, 560, 1.5], [1140, 600, 1.3], [30, 620, 1.2], [700, 610, 1.4]],
-  lamps: [[300, 440], [520, 440], [680, 440], [900, 440]],
+  trees: [[20, 300, 1.4], [400, 262, 1.1], [800, 262, 1.1], [1160, 300, 1.4], [460, 560, 1.5], [1140, 600, 1.3], [30, 620, 1.2], [700, 610, 1.4]],
+  lamps: [[300, 440], [450, 440], [750, 440], [900, 440]],
   plaza: { x: 600, y: 460 },
   clouds: [[100, 60], [520, 90], [900, 40]],
 };
 
 const TALL: Layout = {
   w: 400,
-  h: 1250,
+  h: 1530,
   horizon: 176,
   place: {
-    signlink: { x: 4, y: 186, k: 1.12, door: 80, sign: { x: 218, y: 250 } },
-    guardian: { x: 214, y: 450, k: 1.12, door: 80, sign: { x: 14, y: 520 } },
-    visionary: { x: 4, y: 720, k: 1.12, door: 51, sign: { x: 218, y: 790 } },
-    baseline: { x: 214, y: 990, k: 1.12, door: 80, sign: { x: 14, y: 1060 } },
+    baseline: { x: 4, y: 186, k: 1.12, door: 80, sign: { x: 218, y: 250 } },
+    bellwether: { x: 214, y: 456, k: 1.12, door: 80, sign: { x: 14, y: 526 } },
+    osint: { x: 4, y: 726, k: 1.12, door: 80, sign: { x: 218, y: 790 } },
+    signlink: { x: 214, y: 996, k: 1.12, door: 80, sign: { x: 14, y: 1066 } },
+    visionary: { x: 4, y: 1266, k: 1.12, door: 51, sign: { x: 218, y: 1330 } },
   },
   paths: [
-    [186, 176, 28, 1074],
+    [186, 176, 28, 1354],
     [94, 354, 92, 22],
-    [214, 618, 102, 22],
-    [62, 888, 124, 22],
-    [214, 1158, 102, 22],
+    [214, 624, 102, 22],
+    [94, 894, 92, 22],
+    [214, 1164, 102, 22],
+    [62, 1434, 124, 22],
   ],
-  trees: [[340, 186, 1.1], [16, 470, 1.1], [350, 730, 1.1], [16, 1010, 1.1], [330, 360, 0.9], [40, 640, 0.9]],
-  lamps: [[200, 330], [200, 860]],
+  trees: [[340, 186, 1.1], [16, 470, 1.1], [350, 740, 1.1], [16, 1010, 1.1], [350, 1280, 1.1], [330, 360, 0.9], [40, 640, 0.9]],
+  lamps: [[200, 330], [200, 860], [200, 1400]],
   clouds: [[40, 40], [250, 80]],
 };
 
@@ -104,7 +107,7 @@ function Signpost({ x, y }: { x: number; y: number }) {
       <rect x={-3} y={-70} width={6} height={74} style={v("trunk")} />
       <g transform="translate(0 -70)">
         {arm(0, true, "ACCESS LAB")}
-        {arm(0, false, "OBSERVATORY")}
+        {arm(0, false, "ARCHIVE")}
         {arm(24, true, "WORKSHOP")}
         {arm(24, false, "LEDGER")}
       </g>
@@ -159,8 +162,9 @@ export default function CampusMap({ layout }: { layout: "wide" | "tall" }) {
       ))}
 
       {/* Buildings with their signboards, each one link */}
-      {PROJECT_ORDER.map((slug) => {
+      {FEATURED.map((slug) => {
         const P = L.place[slug];
+        if (!P) return null;
         const B = DRAW[slug];
         const p = featured[slug];
         const loc = LOCATIONS[slug];
@@ -181,7 +185,7 @@ export default function CampusMap({ layout }: { layout: "wide" | "tall" }) {
               <text x={10} y={22} fontSize={9.5} className="font-pixel" style={v("accent")}>
                 {loc.name.toUpperCase()}
               </text>
-              <text x={10} y={41} fontSize={15} fontWeight={600} style={{ ...v("ink"), fontFamily: "var(--font-geist-sans)" }}>
+              <text x={10} y={41} fontSize={p.name.length > 16 ? 12 : 15} fontWeight={600} style={{ ...v("ink"), fontFamily: "var(--font-geist-sans)" }}>
                 {p.name} →
               </text>
             </g>

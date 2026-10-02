@@ -3,6 +3,8 @@ import type { ProjectSlug } from "@/content/types";
 import NetworkDiagram from "../guardian/NetworkDiagram";
 import GloveSchematic from "../visionary/GloveSchematic";
 import BaselineDag from "../baseline/BaselineDag";
+import GateSummary from "../bellwether/GateSummary";
+import OsintFlow from "../osint/OsintFlow";
 
 /** SignLink preview: the fingerspelling example as a transcript → gloss → clip trace. */
 export function SignLinkTrace() {
@@ -50,12 +52,14 @@ export function SignLinkTrace() {
 export const PREVIEW_CAPTION: Record<ProjectSlug, string> = {
   signlink: "Prepared example · not live inference",
   baseline: "Graph from backend/agent.py · LLM nodes outlined",
+  bellwether: "Committed snapshot · synthetic scenarios · mock runs",
+  osint: "Workflow from agent/graph.py",
   guardian: "Synthetic data · illustrative",
   visionary: "Schematic from firmware · not to scale",
 };
 
 /** The diagram that represents a project, framed, with its provenance label. */
-export function DiagramPreview({ slug, idPrefix }: { slug: Exclude<ProjectSlug, "signlink">; idPrefix: string }) {
+export function DiagramPreview({ slug, idPrefix }: { slug: Exclude<ProjectSlug, "signlink" | "bellwether">; idPrefix: string }) {
   return (
     <div className="rounded-panel border border-rule bg-surface p-2 shadow-panel sm:p-3">
       {slug === "guardian" && (
@@ -63,11 +67,18 @@ export function DiagramPreview({ slug, idPrefix }: { slug: Exclude<ProjectSlug, 
       )}
       {slug === "visionary" && <GloveSchematic stage="match" />}
       {slug === "baseline" && <BaselineDag idPrefix={idPrefix} />}
+      {slug === "osint" && (
+        <div className="p-2">
+          <OsintFlow />
+        </div>
+      )}
       <p className="label px-2 pb-1">{PREVIEW_CAPTION[slug]}</p>
     </div>
   );
 }
 
 export default function ProjectPreview({ slug, idPrefix }: { slug: ProjectSlug; idPrefix: string }) {
-  return slug === "signlink" ? <SignLinkTrace /> : <DiagramPreview slug={slug} idPrefix={idPrefix} />;
+  if (slug === "signlink") return <SignLinkTrace />;
+  if (slug === "bellwether") return <GateSummary compact />;
+  return <DiagramPreview slug={slug} idPrefix={idPrefix} />;
 }

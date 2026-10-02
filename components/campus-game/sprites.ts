@@ -275,24 +275,51 @@ export function buildBuildingSprites(pal: Palette): Record<BuildingId, HTMLCanva
         r(11, 25, 10, 2, 3);
         break;
       }
-      case "guardian": {
-        // Observatory: stepped dome, slit, telescope.
-        wall(48);
-        const steps = [[8, 46], [10, 40], [14, 34], [18, 30], [24, 26]];
-        for (const [x, y] of steps) r(x, y, w - x * 2, 48 - y, 3);
-        for (const [x, y] of steps) r(x + 1, y + 1, w - x * 2 - 2, 46 - y, 2);
-        r(36, 26, 8, 22, 1);
+      case "osint": {
+        // Records archive: cornice, filing-drawer façade, magnifier over a page on the roof.
+        wall(34);
+        r(0, 28, w, 7, 3);
+        r(1, 29, w - 2, 5, 2);
+        r(24, 4, 22, 22, 3);
+        r(25, 5, 20, 20, 0);
+        for (const y of [9, 13, 17]) r(28, y, 12, 1, 2);
         ctx.fillStyle = pal[3];
         ctx.beginPath();
-        ctx.moveTo(40, 30);
-        ctx.lineTo(66, 8);
-        ctx.lineTo(70, 13);
-        ctx.lineTo(44, 34);
+        ctx.arc(46, 18, 7, 0, Math.PI * 2);
         ctx.fill();
-        for (const x of [8, 62]) windowAt(x, 60);
-        r(14, 4, 2, 2, 0);
-        r(22, 12, 2, 2, 0);
-        r(8, 16, 2, 2, 0);
+        ctx.fillStyle = pal[1];
+        ctx.beginPath();
+        ctx.arc(46, 18, 4, 0, Math.PI * 2);
+        ctx.fill();
+        r(51, 23, 3, 3, 3);
+        r(53, 25, 3, 3, 3);
+        for (const x of [6, 19, 50, 63]) {
+          for (const y of [42, 54, 66]) {
+            r(x, y, 11, 9, 3);
+            r(x + 1, y + 1, 9, 7, 1);
+            r(x + 4, y + 4, 3, 1, 3);
+          }
+        }
+        door();
+        break;
+      }
+      case "bellwether": {
+        // Evaluation lab: flat roof with plant box, gauge in the red, gate arm by the door.
+        wall(22);
+        r(0, 16, w, 7, 3);
+        r(1, 17, w - 2, 5, 2);
+        r(44, 5, 12, 11, 3);
+        r(45, 6, 10, 9, 1);
+        r(4, 26, 24, 18, 3);
+        r(5, 27, 22, 16, 0);
+        for (const [x, y] of [[8, 40], [9, 35], [13, 31], [19, 31], [23, 35]]) r(x, y, 2, 1, 2);
+        for (let k = 0; k < 6; k++) r(16 + k, 40 - k, 1, 1, 3);
+        r(15, 40, 3, 2, 3);
+        windowAt(48, 28, 12, 10);
+        r(48, h - 15, 2, 13, 3);
+        r(50, h - 15, 14, 3, 3);
+        r(51, h - 14, 12, 1, 0);
+        for (const x of [54, 59]) r(x, h - 14, 2, 1, 3);
         door();
         break;
       }

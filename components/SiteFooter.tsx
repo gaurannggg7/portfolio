@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { site } from "@/content/site";
+import { resume, site } from "@/content/site";
 import type { View } from "@/lib/view";
 import ViewSwitcher from "./view/ViewSwitcher";
 
@@ -7,7 +7,8 @@ const links = [
   { label: "GitHub", href: site.github },
   { label: "LinkedIn", href: site.linkedin },
   { label: "Hugging Face", href: site.huggingface },
-  { label: "Resume", href: site.resume },
+  { label: "Résumé (PDF)", href: resume.pdf },
+  { label: "Résumé (DOCX)", href: resume.docx },
 ];
 
 export default function SiteFooter({ view }: { view: View }) {
@@ -29,7 +30,7 @@ export default function SiteFooter({ view }: { view: View }) {
               <a
                 href={l.href}
                 target="_blank"
-                rel={l.label === "Resume" ? "noopener" : "noopener noreferrer"}
+                rel={l.href.startsWith("/") ? "noopener" : "noopener noreferrer"}
                 className="inline-flex min-h-11 items-center gap-1 text-[15px] text-ink-2 transition-colors hover:text-ink"
               >
                 {l.label}
